@@ -58,6 +58,7 @@ const getLoginInput = () =>{
 
 const login = async () => {
     try {
+        //Send login request
         let response = await axios.post(
             "http://localhost:1337/api/auth/local/",
             {
@@ -66,14 +67,19 @@ const login = async () => {
             }
         );
 
+        //Retrieve user Data
         const userData = {
             id:response.data.user.id,
             username:response.data.user.username,
             jwt:response.data.jwt,
         };
 
+        //Save user data
         sessionStorage.setItem("activeUser", JSON.stringify(userData));
-        console.log(response.data);
+
+        //Remove Login Section
+        console.log("remove login section");
+
     } catch (error) {
         console.error("Login failed:", error);
     }
@@ -132,6 +138,7 @@ const getRegisterInput = () =>{
 
 const register = async () => {
     try {
+        //Send New User Data
         await axios.post(
             "http://localhost:1337/api/auth/local/register",
             {
@@ -141,7 +148,9 @@ const register = async () => {
             }
         );
 
+        //Remove Register Modal
         console.log("remove register modal");
+        
     } catch (error) {
         console.error("Registration failed:", error);
     }
