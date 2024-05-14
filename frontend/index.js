@@ -87,6 +87,9 @@ const login = async () => {
 
 //Register
 const generateRegisterDOM = () => {
+    const wrapper = document.createElement("div");
+    wrapper.setAttribute("class", "wrapper");
+
     //Register Article
     const article = document.createElement("article");
     article.setAttribute("id", "register");
@@ -125,7 +128,8 @@ const generateRegisterDOM = () => {
     article.appendChild(regEmailInput);
     article.appendChild(submitUserBtn);
 
-    loginSection.appendChild(article);
+    wrapper.appendChild(article);
+    loginSection.appendChild(wrapper);
 }
 
 const getRegisterInput = () =>{
