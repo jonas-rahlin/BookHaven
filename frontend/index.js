@@ -122,8 +122,29 @@ const generateRegisterDOM = () => {
     loginSection.appendChild(article);
 }
 
-const register = async () =>{
-    
+const getRegisterInput = () =>{
+    const username = document.getElementById("register_username").value;
+    const email = document.getElementById("register_email").value;
+    const password = document.getElementById("register_password").value;
+
+    return {username, email, password};
+}
+
+const register = async () => {
+    try {
+        await axios.post(
+            "http://localhost:1337/api/auth/local/register",
+            {
+                username: getRegisterInput().username,
+                email: getRegisterInput().email,
+                password: getRegisterInput().password
+            }
+        );
+
+        console.log("remove register modal");
+    } catch (error) {
+        console.error("Registration failed:", error);
+    }
 }
 
 
@@ -143,17 +164,17 @@ generateLoginDOM();
 generateRregisterDOM();
 
 
-/* const register = async () => {
+const register = async () => {
     try {
         let response = await axios.post(
             "http://localhost:1337/api/auth/local/register",
             {
-                username: registerUserName.value,
-                email: registerUserEmail.value,
-                password: registerUserPassword.value,
+                username: getRegisterInput().username,
+                email: getRegisterInput().email,
+                password: getRegisterInput().password
             }
         );
     } catch (error) {
         console.error("Registration failed:", error);
     }
-} */
+}
