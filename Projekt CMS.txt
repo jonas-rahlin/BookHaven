@@ -4,6 +4,6 @@
 4. Plan project DONE
 5. HTML Structure template DONE
 6. Set up basic API content DONE
-7. 	a) register / login -> (test register, add modal functionality)
+7. 	a) register / login -> (add modal functionality)
 	b) public session ->	 
 	c) logged in session
