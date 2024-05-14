@@ -1,0 +1,6 @@
+1. Set up backend
+2. Set up github
+3. Set up plugins
+4. Plan project
+5. HTML Structure template
+6. a) register / login ->	b) public session ->	 c) logged in session
