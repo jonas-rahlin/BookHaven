@@ -3,6 +3,12 @@ const publicSection = document.getElementById("publicSection");
 const userSection = document.getElementById("userSection");
 
 
+//Login Section
+const getLoginInput = () =>{
+    const username = document.getElementById("login_username").value;
+    const password = document.getElementById("login_password").value;
+    return {username, password};
+}
 
 const generateLoginDOM = () => {
     //Login Article
@@ -26,6 +32,9 @@ const generateLoginDOM = () => {
     loginBtn.setAttribute("type", "button");
     loginBtn.setAttribute("id", "login_btn");
     loginBtn.textContent = "Log In";
+    loginBtn.addEventListener("click", ()=> {
+        console.log("working...");
+    });
 
     //Append Elements
     article.appendChild(usernameInput);
@@ -35,11 +44,20 @@ const generateLoginDOM = () => {
     loginSection.appendChild(article);
 }
 
+const loginBtn = document.getElementById("");
+
+
+
+
+
+//Public Section
+
+//User Section
+
+
+//Retrive the Information from Login Inputs
+
+
+
+
 generateLoginDOM();
-
-const getLoginInput = () =>{
-    const username = document.getElementById("login_username").value;
-    const password = document.getElementById("login_password").value;
-
-    return [username, password];
-}
