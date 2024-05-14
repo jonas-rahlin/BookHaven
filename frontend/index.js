@@ -34,6 +34,7 @@ const generateLoginDOM = () => {
     loginBtn.textContent = "Log In";
     loginBtn.addEventListener("click", ()=> {
         console.log("working...");
+        login();
     });
 
     //Append Elements
@@ -42,6 +43,34 @@ const generateLoginDOM = () => {
     article.appendChild(loginBtn);
 
     loginSection.appendChild(article);
+}
+
+const login = async () => {
+    try {
+        let response = await axios.post(
+            "http://localhost:1337/api/auth/local/",
+            {
+                identifier: getLoginInput().username,
+                password: getLoginInput().password,
+            }
+        );
+
+        const userData = {
+            id:response.data.user.id,
+            username:response.data.user.username,
+            jwt:response.data.jwt,
+        };
+
+        sessionStorage.setItem("activeUser", JSON.stringify(userData));
+        console.log(response.data);
+    } catch (error) {
+        console.error("Login failed:", error);
+    }
+}
+
+const activeUser = () =>{
+    
+    return {id, username, jwt};
 }
 
 const loginBtn = document.getElementById("");
@@ -61,3 +90,20 @@ const loginBtn = document.getElementById("");
 
 
 generateLoginDOM();
+
+
+
+/* const register = async () => {
+    try {
+        let response = await axios.post(
+            "http://localhost:1337/api/auth/local/register",
+            {
+                username: registerUserName.value,
+                email: registerUserEmail.value,
+                password: registerUserPassword.value,
+            }
+        );
+    } catch (error) {
+        console.error("Registration failed:", error);
+    }
+} */
