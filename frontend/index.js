@@ -89,6 +89,9 @@ const login = async () => {
 const generateRegisterDOM = () => {
     const wrapper = document.createElement("div");
     wrapper.setAttribute("class", "wrapper");
+    wrapper.addEventListener("click", ()=>{
+        wrapper.remove();
+    })
 
     //Register Article
     const article = document.createElement("article");
