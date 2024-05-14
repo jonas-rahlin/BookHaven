@@ -80,7 +80,7 @@ const login = async () => {
 }
 
 //Register
-const registerDOM = () => {
+const generateRegisterDOM = () => {
     //Register Article
     const article = document.createElement("article");
     article.setAttribute("id", "register");
@@ -140,7 +140,7 @@ const register = async () =>{
 
 
 generateLoginDOM();
-registerLoginDOM();
+generateRregisterDOM();
 
 
 /* const register = async () => {
