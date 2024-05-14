@@ -78,7 +78,9 @@ const login = async () => {
         sessionStorage.setItem("activeUser", JSON.stringify(userData));
 
         //Remove Login Section
-        console.log("remove login section");
+        while (loginSection.firstChild) {
+            loginSection.removeChild(loginSection.firstChild);
+        }
 
     } catch (error) {
         console.error("Login failed:", error);
@@ -157,6 +159,9 @@ const register = async () => {
 
         //Remove Register Modal
         console.log("remove register modal");
+        while (loginSection.firstChild) {
+            loginSection.removeChild(loginSection.firstChild);
+        }
 
     } catch (error) {
         console.error("Registration failed:", error);
