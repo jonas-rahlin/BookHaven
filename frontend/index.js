@@ -150,7 +150,7 @@ const register = async () => {
 
         //Remove Register Modal
         console.log("remove register modal");
-        
+
     } catch (error) {
         console.error("Registration failed:", error);
     }
@@ -170,20 +170,4 @@ const register = async () => {
 
 
 generateLoginDOM();
-generateRregisterDOM();
-
-
-const register = async () => {
-    try {
-        let response = await axios.post(
-            "http://localhost:1337/api/auth/local/register",
-            {
-                username: getRegisterInput().username,
-                email: getRegisterInput().email,
-                password: getRegisterInput().password
-            }
-        );
-    } catch (error) {
-        console.error("Registration failed:", error);
-    }
-}
+generateRegisterDOM();
