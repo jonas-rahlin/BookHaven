@@ -2,6 +2,74 @@ const loginSection = document.getElementById("loginSection");
 const publicSection = document.getElementById("publicSection");
 const userSection = document.getElementById("userSection");
 
+/* Global */
+
+// API Call
+const retrieveBooksAPI = async () =>{
+    try{
+        const response = await axios.get("http://localhost:1337/api/books?populate=deep");
+        return response.data;
+    } catch (error) {
+        console.error("Error retrieving API information");
+    }
+}
+
+// Book Class
+class Book {
+    constructor(title, author, pages, releaseDate, cover, rating, id){
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.releaseDate = releaseDate;
+        this.cover = cover;
+        this.rating = rating;
+        this.id = id;
+    }
+
+    generateBookDOM(){
+        //Book
+        const bookDiv = document.createElement("div");
+        bookDiv.className = "book";
+    
+        //Cover
+        const img = document.createElement("img");
+        img.className = "book_img";
+        img.src = "http://localhost:1337" + this.cover;
+        img.alt = "#";
+        bookDiv.appendChild(img);
+    
+        //Title
+        const title = document.createElement("h3");
+        title.className = "book_title";
+        title.textContent = this.title;
+        bookDiv.appendChild(title);
+    
+        //Author
+        const author = document.createElement("p");
+        author.className = "book_author";
+        author.textContent = this.author;
+        bookDiv.appendChild(author);
+    
+        //Release
+        const release = document.createElement("p");
+        release.className = "book_release";
+        release.textContent = this.releaseDate;
+        bookDiv.appendChild(release);
+    
+        //Rating
+        const ratingDiv = document.createElement("div");
+        ratingDiv.className = "book_rating";
+        bookDiv.appendChild(ratingDiv);
+    
+        //Pages
+        const pages = document.createElement("p");
+        pages.className = "book_pages";
+        pages.textContent = this.pages + " pages";
+        bookDiv.appendChild(pages);
+
+        return bookDiv;
+    }
+}
 
 /* Login Section */
 
@@ -81,7 +149,6 @@ const login = async () => {
         while (loginSection.firstChild) {
             loginSection.removeChild(loginSection.firstChild);
         }
-
     } catch (error) {
         console.error("Login failed:", error);
     }
@@ -160,13 +227,49 @@ const register = async () => {
         //Remove Register Modal
         console.log("remove register modal");
         while (loginSection.firstChild) {
-            loginSection.removeChild(loginSection.firstChild);
+        loginSection.removeChild(loginSection.firstChild);
         }
-
     } catch (error) {
         console.error("Registration failed:", error);
     }
 }
+
+/* Public Section */
+
+//Books Display
+const createPublicBooks = async () =>{
+    const responseAPI = await retrieveBooksAPI();
+    const dataAPI = responseAPI.data;
+
+    const books = [];
+    dataAPI.forEach((book)=>{
+        const title = book.attributes.title;
+        const author = book.attributes.author;
+        const pages = book.attributes.pages;
+        const releaseDate = book.attributes.releaseDate;
+        const cover = book.attributes.cover.data.attributes.url;
+        const rating = book.attributes.rating;
+        const id = book.id;
+
+        books.push(new Book(title, author, pages, releaseDate, cover, rating, id));
+    })
+
+    return books;
+}
+
+const generateBookDisplayDOM = async () =>{
+    const books = await createPublicBooks();
+    for(const book of books) {
+        const bookDOM = book.generateBookDOM();
+        console.log(bookDOM);
+        document.getElementById("booksDisplay").appendChild(bookDOM);
+    }
+}
+
+generateBookDisplayDOM()
+
+
+
 
 
 

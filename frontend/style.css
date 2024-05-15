@@ -53,3 +53,7 @@ input {
 
   z-index: 1001;
 }
+
+img {
+  width: 10rem;
+}
