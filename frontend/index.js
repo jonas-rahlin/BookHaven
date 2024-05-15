@@ -79,17 +79,34 @@ const generateLoginDOM = () => {
     const article = document.createElement("article");
     article.setAttribute("id", "login");
 
+    //Headings Container
+    const headings = document.createElement("div");
+    article.setAttribute("id", "headings");
+    article.appendChild(headings);
+
+    //Heading 1
+    const h1 = document.createElement("h1");
+    h1.textContent = "BookHaven";
+    headings.appendChild(h1);
+
+    //Heading 2
+    const h2 = document.createElement("h2");
+    h2.textContent = "A Cozy Oasis for Booklovers: Where Every Page Feels Like Home.";
+    headings.appendChild(h2);
+
     //Username
     const usernameInput = document.createElement("input");
     usernameInput.setAttribute("type", "text");
     usernameInput.setAttribute("id", "login_username");
     usernameInput.setAttribute("placeholder", "Username");
+    article.appendChild(usernameInput);
 
     //Password
     const passwordInput = document.createElement("input");
     passwordInput.setAttribute("type", "password");
     passwordInput.setAttribute("id", "login_password");
     passwordInput.setAttribute("placeholder", "Password");
+    article.appendChild(passwordInput);
 
     //Login Btn
     const loginBtn = document.createElement("button");
@@ -100,6 +117,7 @@ const generateLoginDOM = () => {
         console.log("working...");
         login();
     });
+    article.appendChild(loginBtn);
 
     const registerBtn = document.createElement("button");
     registerBtn.setAttribute("type", "button");
@@ -108,13 +126,9 @@ const generateLoginDOM = () => {
     registerBtn.addEventListener("click", ()=> {
         generateRegisterDOM();
     });
-
-    //Append Elements
-    article.appendChild(usernameInput);
-    article.appendChild(passwordInput);
-    article.appendChild(loginBtn);
     article.appendChild(registerBtn);
 
+    //Append Elements
     loginSection.appendChild(article);
 }
 
