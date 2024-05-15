@@ -5,8 +5,10 @@
 5. HTML Structure template DONE
 6. Set up basic API content DONE
 7. 	a) register / login DONE
-	b) public session ->	 
+	b) public session DONE	 
 	c) logged in session
 
 
-fix click event on modal close
+REMOVE SESSION STORAGE DELETE ON REFRESH
+
+

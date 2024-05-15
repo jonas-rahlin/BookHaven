@@ -148,6 +148,15 @@ h2 {
   border-radius: 3px;
 }
 
+.book_rating {
+  width: 100%;
+  color: yellow;
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 img {
   width: 10rem;
   height: 15rem;

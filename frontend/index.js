@@ -280,12 +280,27 @@ const generateBookDisplayDOM = async () =>{
     const books = await createPublicBooks();
     for(const book of books) {
         const bookDOM = book.generateBookDOM();
-        console.log(bookDOM);
+
+        const rating = Math.round(book.rating);
+
+        if(rating > 0){
+            for(let i=0; i<rating; i++){
+                const star = document.createElement("i");
+                star.classList.add('fa-solid', 'fa-star');
+                bookDOM.childNodes[4].appendChild(star);
+            }
+        }
+
+        for(let i=0; i<(5-rating); i++){
+            const star = document.createElement("i");
+            star.classList.add('fa-regular', 'fa-star');
+            bookDOM.childNodes[4].appendChild(star);
+        }
+
         article.appendChild(bookDOM);
     }
     publicSection.appendChild(article);
 }
-
 
 
 //If no user is active, generate login and public DOM elements
