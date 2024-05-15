@@ -106,7 +106,7 @@ const generateLoginDOM = () => {
     registerBtn.setAttribute("id", "register_btn");
     registerBtn.textContent = "Create Account";
     registerBtn.addEventListener("click", ()=> {
-
+        generateRegisterDOM();
     });
 
     //Append Elements
@@ -286,3 +286,5 @@ generateBookDisplayDOM()
 
 generateLoginDOM();
 generateRegisterDOM();
+
+document.getElementBy

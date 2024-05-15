@@ -9,6 +9,10 @@ body {
   font-family: "Noto Sans", sans-serif;
 }
 
+button {
+  cursor: pointer;
+}
+
 button,
 input {
   margin: 0.5rem;
