@@ -19,9 +19,19 @@ input {
   width: 10rem;
 }
 
+nav {
+  display: none;
+}
+
 #navbar_logo {
   font-family: "Merriweather", serif;
   font-size: 3rem;
+}
+
+#loginSection {
+  width: 100%;
+  background-color: red;
+  height: 80vh;
 }
 
 #loginSection .wrapper {
@@ -54,6 +64,24 @@ input {
   z-index: 1001;
 }
 
+#publicSection {
+  width: 100%;
+}
+
+#booksDisplay {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#booksDisplay .book {
+  margin: 1rem;
+  width: 10rem;
+  border: solid 1px black;
+}
+
 img {
   width: 10rem;
+  height: 15rem;
 }
