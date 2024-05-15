@@ -159,10 +159,12 @@ const login = async () => {
         //Save user data
         sessionStorage.setItem("activeUser", JSON.stringify(userData));
 
-        //Remove Login Section
+        //Remove Login Section and Public Section
+        publicSection.removeChild(publicSection.firstChild);
         while (loginSection.firstChild) {
             loginSection.removeChild(loginSection.firstChild);
         }
+
     } catch (error) {
         console.error("Login failed:", error);
     }
@@ -179,6 +181,9 @@ const generateRegisterDOM = () => {
     //Register Article
     const article = document.createElement("article");
     article.setAttribute("id", "register");
+    article.addEventListener("click", ()=>{
+        event.stopPropagation();
+    })
 
     //Username
     const regUsernameInput = document.createElement("input");
@@ -204,7 +209,6 @@ const generateRegisterDOM = () => {
     submitUserBtn.setAttribute("id", "submitUser_btn");
     submitUserBtn.textContent = "Join";
     submitUserBtn.addEventListener("click", ()=> {
-        console.log("working...");
         register();
     });
 
@@ -272,32 +276,26 @@ const createPublicBooks = async () =>{
 }
 
 const generateBookDisplayDOM = async () =>{
+    const article = document.createElement("article");
+    article.setAttribute("id", "booksDisplay");
+
     const books = await createPublicBooks();
     for(const book of books) {
         const bookDOM = book.generateBookDOM();
         console.log(bookDOM);
-        document.getElementById("booksDisplay").appendChild(bookDOM);
+        article.appendChild(bookDOM);
     }
+    publicSection.appendChild(article);
 }
 
-generateBookDisplayDOM()
 
 
+//If no user is active, generate login and public DOM elements
+if(!sessionStorage.getItem("activeUser")) {
+    generateLoginDOM();
+    generateBookDisplayDOM();
+}
 
-
-
-
-
-//Public Section
-
-//User Section
-
-
-//Retrive the Information from Login Inputs
-
-
-
-
-generateLoginDOM();
-
-document.getElementBy
+window.addEventListener('beforeunload', function() {
+    sessionStorage.clear();
+});

@@ -4,13 +4,45 @@
   box-sizing: border-box;
 }
 
+/* Cozy Amber Theme */
+/* :root {
+  --background: #f3dc5a;
+  --font: #000000;
+  --button: #bc7440;
+  --details: #ea9f54;
+} */
+
+:root {
+  --background: #410775;
+  --font: #ffffff;
+  --button: #858484;
+  --details: #35195b;
+}
+
+/* :root {
+  --background: #556b2f;
+  --font: #ffffff;
+  --button: #b66d38;
+  --details: #c2c20a;
+} */
+
+/* :root {
+  --background: #e8e8e8;
+  --font: #333333;
+  --button: #6db5f1;
+  --details: #808080;
+} */
+
 body {
-  background-color: beige;
+  background-color: var(--background);
   font-family: "Noto Sans", sans-serif;
+  color: var(--font);
 }
 
 button {
   cursor: pointer;
+  background-color: var(--button);
+  color: var(--font);
 }
 
 button,
@@ -19,8 +51,9 @@ input {
   height: 3rem;
   padding: 0.5rem;
   border-radius: 3px;
-  border: solid 1px black;
+  border: none;
   width: 100%;
+  border: solid 1px rgba(0, 0, 0, 0.75);
 }
 
 nav {
@@ -45,7 +78,7 @@ nav {
 #loginSection .wrapper {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 0;
   left: 0;
@@ -57,9 +90,11 @@ nav {
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-  border: solid 1px black;
-  width: 33%;
+  width: 20rem;
   border-radius: 3px;
+
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  background-color: var(--details);
 }
 
 #headings {
@@ -82,6 +117,7 @@ h2 {
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 3px;
+  width: 20rem;
 
   display: flex;
   flex-direction: column;
@@ -90,8 +126,7 @@ h2 {
   padding: 2rem;
 
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-
-  background-color: beige;
+  background-color: var(--details);
 
   z-index: 1001;
 }
