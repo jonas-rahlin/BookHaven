@@ -243,10 +243,8 @@ const register = async () => {
         );
 
         //Remove Register Modal
-        console.log("remove register modal");
-        while (loginSection.firstChild) {
-        loginSection.removeChild(loginSection.firstChild);
-        }
+        document.getElementById("loginSection").querySelector(".wrapper").remove();
+
     } catch (error) {
         console.error("Registration failed:", error);
     }
