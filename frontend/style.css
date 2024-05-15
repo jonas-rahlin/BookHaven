@@ -16,11 +16,11 @@ button {
 button,
 input {
   margin: 0.5rem;
-  height: 2rem;
+  height: 3rem;
   padding: 0.5rem;
   border-radius: 3px;
   border: solid 1px black;
-  width: 10rem;
+  width: 100%;
 }
 
 nav {
@@ -35,6 +35,11 @@ nav {
 #loginSection {
   width: 100%;
   height: 90vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10rem;
 }
 
 #loginSection .wrapper {
@@ -45,6 +50,30 @@ nav {
   top: 0;
   left: 0;
   z-index: 1000;
+}
+
+#login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border: solid 1px black;
+  width: 33%;
+  border-radius: 3px;
+}
+
+#headings {
+  margin: 1rem;
+  width: 50%;
+}
+
+h1 {
+  font-size: 5rem;
+  font-family: "Merriweather", serif;
+}
+
+h2 {
+  font-size: 2rem;
 }
 
 #register {
@@ -81,10 +110,11 @@ nav {
 #booksDisplay .book {
   margin: 1rem;
   width: 10rem;
-  border: solid 1px black;
+  border-radius: 3px;
 }
 
 img {
   width: 10rem;
   height: 15rem;
+  border-radius: 3px;
 }

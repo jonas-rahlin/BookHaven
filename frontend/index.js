@@ -75,14 +75,9 @@ class Book {
 
 //Login
 const generateLoginDOM = () => {
-    //Login Article
-    const article = document.createElement("article");
-    article.setAttribute("id", "login");
-
     //Headings Container
     const headings = document.createElement("div");
-    article.setAttribute("id", "headings");
-    article.appendChild(headings);
+    headings.setAttribute("id", "headings");
 
     //Heading 1
     const h1 = document.createElement("h1");
@@ -91,8 +86,12 @@ const generateLoginDOM = () => {
 
     //Heading 2
     const h2 = document.createElement("h2");
-    h2.textContent = "A Cozy Oasis for Booklovers: Where Every Page Feels Like Home.";
+    h2.textContent = "Where every page feels like home.";
     headings.appendChild(h2);
+
+    //Login Article
+    const article = document.createElement("article");
+    article.setAttribute("id", "login");
 
     //Username
     const usernameInput = document.createElement("input");
@@ -129,6 +128,7 @@ const generateLoginDOM = () => {
     article.appendChild(registerBtn);
 
     //Append Elements
+    loginSection.appendChild(headings);
     loginSection.appendChild(article);
 }
 
@@ -299,6 +299,5 @@ generateBookDisplayDOM()
 
 
 generateLoginDOM();
-generateRegisterDOM();
 
 document.getElementBy
