@@ -56,16 +56,16 @@ class Book {
         release.textContent = this.releaseDate;
         bookDiv.appendChild(release);
     
-        //Rating
-        const ratingDiv = document.createElement("div");
-        ratingDiv.className = "book_rating";
-        bookDiv.appendChild(ratingDiv);
-    
         //Pages
         const pages = document.createElement("p");
         pages.className = "book_pages";
         pages.textContent = this.pages + " pages";
         bookDiv.appendChild(pages);
+
+        //Rating
+        const ratingDiv = document.createElement("div");
+        ratingDiv.className = "book_rating";
+        bookDiv.appendChild(ratingDiv);
 
         return bookDiv;
     }
@@ -287,21 +287,20 @@ const generateBookDisplayDOM = async () =>{
             for(let i=0; i<rating; i++){
                 const star = document.createElement("i");
                 star.classList.add('fa-solid', 'fa-star');
-                bookDOM.childNodes[4].appendChild(star);
+                bookDOM.childNodes[5].appendChild(star);
             }
         }
 
         for(let i=0; i<(5-rating); i++){
             const star = document.createElement("i");
             star.classList.add('fa-regular', 'fa-star');
-            bookDOM.childNodes[4].appendChild(star);
+            bookDOM.childNodes[5].appendChild(star);
         }
 
         article.appendChild(bookDOM);
     }
     publicSection.appendChild(article);
 }
-
 
 //If no user is active, generate login and public DOM elements
 if(!sessionStorage.getItem("activeUser")) {
