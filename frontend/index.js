@@ -165,6 +165,10 @@ const login = async () => {
             loginSection.removeChild(loginSection.firstChild);
         }
 
+        //Generate user section
+        generateSortingDOM();
+        generateBookDisplayDOM();
+
     } catch (error) {
         console.error("Login failed:", error);
     }
@@ -302,10 +306,84 @@ const generateBookDisplayDOM = async () =>{
     publicSection.appendChild(article);
 }
 
+/* User Section */
+const generateSortingDOM = () => {
+    //Article
+    const article = document.createElement("article");
+    article.id = "sorting";
+
+    //Select Display Type
+    const selectDisplay = document.createElement("select");
+    selectDisplay.name = "";
+    selectDisplay.id = "selectDisplay";
+
+    const optionPublic = document.createElement("option");
+    optionPublic.value = "public";
+    optionPublic.id = "selectDisplay_public";
+    optionPublic.textContent = "All Books";
+
+    const optionUser = document.createElement("option");
+    optionUser.value = "user";
+    optionUser.id = "selectDisplay_user";
+    optionUser.textContent = "My Books";
+
+    selectDisplay.appendChild(optionPublic);
+    selectDisplay.appendChild(optionUser);
+
+    //Select Sorting
+    const sortBooks = document.createElement("select");
+    sortBooks.name = "";
+    sortBooks.id = "sortBooks";
+
+    const optionTitle = document.createElement("option");
+    optionTitle.value = "title";
+    optionTitle.id = "sortBooks_title";
+    optionTitle.textContent = "Title";
+
+    const optionAuthor = document.createElement("option");
+    optionAuthor.value = "author";
+    optionAuthor.id = "sortBooks_author";
+    optionAuthor.textContent = "Author";
+
+    const optionRating = document.createElement("option");
+    optionRating.value = "rating";
+    optionRating.id = "sortBooks_rating";
+    optionRating.textContent = "Rating";
+
+    const optionYear = document.createElement("option");
+    optionYear.value = "year";
+    optionYear.id = "sortBooks_year";
+    optionYear.textContent = "Year";
+
+    sortBooks.appendChild(optionTitle);
+    sortBooks.appendChild(optionAuthor);
+    sortBooks.appendChild(optionRating);
+    sortBooks.appendChild(optionYear);
+
+    //Append
+    article.appendChild(selectDisplay);
+    article.appendChild(sortBooks);
+    userSection.appendChild(article);
+}
+
+const generateNavDOM = () => {
+    
+}
+
+
+
+
+/* Run on start */
+
 //If no user is active, generate login and public DOM elements
 if(!sessionStorage.getItem("activeUser")) {
     generateLoginDOM();
     generateBookDisplayDOM();
+}
+
+//If user is active, generate sorting DOM
+if(sessionStorage.getItem("activeUser")) {
+    generateSortingDOM();
 }
 
 window.addEventListener('beforeunload', function() {
