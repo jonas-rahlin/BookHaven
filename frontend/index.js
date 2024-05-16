@@ -214,7 +214,7 @@ const login = async () => {
         }
 
         //Generate user section
-        generateSortingDOM();
+        generateNavDOM();
         generateBookDisplayDOM();
 
     } catch (error) {
@@ -373,6 +373,9 @@ const generateNavDOM = () => {
     article.appendChild(container1);
     article.appendChild(container2);
     document.querySelector("nav").appendChild(article);
+
+    //Create Sorting DOM
+    generateSortingDOM();
 }
 
 //Sorting Tools DOM
@@ -489,7 +492,6 @@ const logout = () =>{
 if(sessionStorage.getItem("activeUser")) {
     generateNavDOM();
     generateBookDisplayDOM();
-    generateSortingDOM();
 } else {
     generateLoginDOM();
     generateBookDisplayDOM();
