@@ -7,7 +7,7 @@ const userSection = document.getElementById("userSection");
 // API Call
 const retrieveBooksAPI = async () =>{
     try{
-        const response = await axios.get("http://localhost:1337/api/books?populate=deep");
+        const response = await axios.get("http://localhost:1337/api/books?populate=deep,2");
         return response.data;
     } catch (error) {
         console.error("Error retrieving API information");
@@ -73,10 +73,23 @@ class Book {
 
 //Books Display DOM
 const generateBookDisplayDOM = async () =>{
+    const booksDisplay = document.getElementById("booksDisplay");
+    if(booksDisplay){
+        booksDisplay.remove();
+    }
+
     const article = document.createElement("article");
     article.setAttribute("id", "booksDisplay");
 
-    const books = await createPublicBooks();
+    let books = null;
+    const selectDisplay = document.getElementById("selectDisplay");
+    if(selectDisplay && selectDisplay.value === "user") {
+        books = await createUserBooks();
+    } else {
+        books = await createPublicBooks();
+    }
+
+    console.log(books);
     for(const book of books) {
         const bookDOM = book.generateBookDOM();
 
@@ -104,7 +117,6 @@ const generateBookDisplayDOM = async () =>{
     } else {
         userSection.appendChild(article);
     }
-
 }
 
 /* Login Section */
@@ -369,6 +381,10 @@ const generateSortingDOM = () => {
     const selectDisplay = document.createElement("select");
     selectDisplay.name = "";
     selectDisplay.id = "selectDisplay";
+    selectDisplay.addEventListener("change", ()=>{
+        console.log("hello");
+        generateBookDisplayDOM();
+    });
 
     const optionPublic = document.createElement("option");
     optionPublic.value = "public";
@@ -416,7 +432,41 @@ const generateSortingDOM = () => {
     //Append
     article.appendChild(selectDisplay);
     article.appendChild(sortBooks);
-    document.getElementById("navbar").children[1].appendChild(article);
+    document.getElementById("navbar").children[1].appendChild(article); 
+}
+
+//API Call
+const retrieveUserAPI = async () =>{
+    const userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
+    try{
+        const response = await axios.get(`http://localhost:1337/api/users/${userID}?populate=deep,3`);
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error retrieving API information");
+    }
+}
+
+//Books Display
+const createUserBooks = async () => {
+    const responseAPI = await retrieveUserAPI();
+    const dataAPI = responseAPI.user;
+    console.log(dataAPI);
+
+    const books = [];
+    dataAPI.forEach((book)=>{
+        console.log(book);
+        const title = book.title;
+        const author = book.author;
+        const pages = book.pages;
+        const releaseDate = book.releaseDate;
+        const cover = book.cover.url;
+        const rating = book.rating;
+        const id = book.id;
+
+        books.push(new Book(title, author, pages, releaseDate, cover, rating, id));
+    })
+    return books;
 }
 
 
