@@ -4,7 +4,7 @@ const userSection = document.getElementById("userSection");
 
 /* Global */
 
-// API Call
+// API Call Books
 const retrieveBooksAPI = async () =>{
     try{
         const response = await axios.get("http://localhost:1337/api/books?populate=deep,2");
@@ -121,7 +121,7 @@ const generateBookDisplayDOM = async () =>{
 
 /* Login Section */
 
-//Login
+//Login DOM
 const generateLoginDOM = () => {
     //Headings Container
     const headings = document.createElement("div");
@@ -179,13 +179,13 @@ const generateLoginDOM = () => {
     loginSection.appendChild(headings);
     loginSection.appendChild(article);
 }
-
+//Login Input Values
 const getLoginInput = () =>{
     const username = document.getElementById("login_username").value;
     const password = document.getElementById("login_password").value;
     return {username, password};
 }
-
+//Login Functionality
 const login = async () => {
     try {
         //Send login request
@@ -222,7 +222,7 @@ const login = async () => {
     }
 }
 
-//Register
+//Register DOM
 const generateRegisterDOM = () => {
     const wrapper = document.createElement("div");
     wrapper.setAttribute("class", "wrapper");
@@ -273,7 +273,7 @@ const generateRegisterDOM = () => {
     wrapper.appendChild(article);
     loginSection.appendChild(wrapper);
 }
-
+//Register Input Values
 const getRegisterInput = () =>{
     const username = document.getElementById("register_username").value;
     const email = document.getElementById("register_email").value;
@@ -281,7 +281,7 @@ const getRegisterInput = () =>{
 
     return {username, email, password};
 }
-
+//Register Functionality
 const register = async () => {
     try {
         //Send New User Data
@@ -304,7 +304,7 @@ const register = async () => {
 
 /* Public Section */
 
-//Books Display
+//Public Books Creation
 const createPublicBooks = async () =>{
     const responseAPI = await retrieveBooksAPI();
     const dataAPI = responseAPI.data;
@@ -348,6 +348,7 @@ const generateNavDOM = () => {
     const logoutIcon = document.createElement("i");
     logoutIcon.className = "fa-solid fa-door-open";
     navbarLogout.appendChild(logoutIcon);
+
 
     //Append to container 1
     container1.appendChild(navbarLogo);
@@ -435,7 +436,7 @@ const generateSortingDOM = () => {
     document.getElementById("navbar").children[1].appendChild(article); 
 }
 
-//API Call
+//API Call User
 const retrieveUserAPI = async () =>{
     const userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
     try{
@@ -447,7 +448,7 @@ const retrieveUserAPI = async () =>{
     }
 }
 
-//Books Display
+//User Books Creation
 const createUserBooks = async () => {
     const responseAPI = await retrieveUserAPI();
     const dataAPI = responseAPI.user;
@@ -473,17 +474,14 @@ const createUserBooks = async () => {
 
 /* Run on start */
 
-//If no user is active, generate login and public DOM elements
-if(!sessionStorage.getItem("activeUser")) {
-    generateLoginDOM();
-    generateBookDisplayDOM();
-}
-
-//If user is active, generate sorting DOM
+//Check if there is an active user or not, then run appropriate DOM creations
 if(sessionStorage.getItem("activeUser")) {
     generateNavDOM();
     generateBookDisplayDOM();
     generateSortingDOM();
+} else {
+    generateLoginDOM();
+    generateBookDisplayDOM();
 }
 
 /* window.addEventListener('beforeunload', function() {
