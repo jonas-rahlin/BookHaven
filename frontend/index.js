@@ -71,6 +71,42 @@ class Book {
     }
 }
 
+//Books Display DOM
+const generateBookDisplayDOM = async () =>{
+    const article = document.createElement("article");
+    article.setAttribute("id", "booksDisplay");
+
+    const books = await createPublicBooks();
+    for(const book of books) {
+        const bookDOM = book.generateBookDOM();
+
+        const rating = Math.round(book.rating);
+
+        if(rating > 0){
+            for(let i=0; i<rating; i++){
+                const star = document.createElement("i");
+                star.classList.add('fa-solid', 'fa-star');
+                bookDOM.childNodes[5].appendChild(star);
+            }
+        }
+
+        for(let i=0; i<(5-rating); i++){
+            const star = document.createElement("i");
+            star.classList.add('fa-regular', 'fa-star');
+            bookDOM.childNodes[5].appendChild(star);
+        }
+
+        article.appendChild(bookDOM);
+    }
+
+    if(!sessionStorage.getItem("activeUser")){
+        publicSection.appendChild(article);
+    } else {
+        userSection.appendChild(article);
+    }
+
+}
+
 /* Login Section */
 
 //Login
@@ -277,35 +313,6 @@ const createPublicBooks = async () =>{
     return books;
 }
 
-const generateBookDisplayDOM = async () =>{
-    const article = document.createElement("article");
-    article.setAttribute("id", "booksDisplay");
-
-    const books = await createPublicBooks();
-    for(const book of books) {
-        const bookDOM = book.generateBookDOM();
-
-        const rating = Math.round(book.rating);
-
-        if(rating > 0){
-            for(let i=0; i<rating; i++){
-                const star = document.createElement("i");
-                star.classList.add('fa-solid', 'fa-star');
-                bookDOM.childNodes[5].appendChild(star);
-            }
-        }
-
-        for(let i=0; i<(5-rating); i++){
-            const star = document.createElement("i");
-            star.classList.add('fa-regular', 'fa-star');
-            bookDOM.childNodes[5].appendChild(star);
-        }
-
-        article.appendChild(bookDOM);
-    }
-    publicSection.appendChild(article);
-}
-
 /* User Section */
 const generateSortingDOM = () => {
     //Article
@@ -367,7 +374,7 @@ const generateSortingDOM = () => {
 }
 
 const generateNavDOM = () => {
-    
+
 }
 
 
