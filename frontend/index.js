@@ -71,6 +71,9 @@ class Book {
     }
 }
 
+// Array for storing Books
+let books = [];
+
 //Books Display DOM
 const generateBookDisplayDOM = async () =>{
     const booksDisplay = document.getElementById("booksDisplay");
@@ -88,6 +91,8 @@ const generateBookDisplayDOM = async () =>{
     } else {
         books = await createPublicBooks();
     }
+
+    sortBooks();
 
     console.log(books);
     for(const book of books) {
@@ -118,6 +123,7 @@ const generateBookDisplayDOM = async () =>{
         userSection.appendChild(article);
     }
 }
+
 
 /* Login Section */
 
@@ -302,6 +308,7 @@ const register = async () => {
     }
 }
 
+
 /* Public Section */
 
 //Public Books Creation
@@ -309,7 +316,7 @@ const createPublicBooks = async () =>{
     const responseAPI = await retrieveBooksAPI();
     const dataAPI = responseAPI.data;
 
-    const books = [];
+    books = [];
     dataAPI.forEach((book)=>{
         const title = book.attributes.title;
         const author = book.attributes.author;
@@ -378,6 +385,78 @@ const generateNavDOM = () => {
     generateSortingDOM();
 }
 
+//Book Sorting Functionality
+sortBooks = () =>{
+    let sortBy = document.getElementById("sortBooks").value;
+
+    const sortByTitleAuthor = () =>{
+        books.sort((a, b)=>{
+            let bookA = a[sortBy].toLowerCase();
+            let bookB = b[sortBy].toLowerCase();
+    
+            //Remove "The"
+            if (bookA.startsWith("the ")) {
+                bookA = bookA.slice(4);
+            }
+            if (bookB.startsWith("the ")) {
+                bookB = bookB.slice(4); //
+            }
+    
+            if (bookA < bookB) {
+                return -1;
+            }
+            if (bookA > bookB) {
+                return 1;
+            }
+            return 0;
+        })
+    }
+
+    const sortByRating = () =>{
+        console.log(books);
+        books.sort((a, b)=>{
+            const bookA = a.rating;
+            const bookB = b.rating;
+
+            return bookB - bookA;
+        })
+    }
+
+    const sortByYear = () =>{
+        books.sort((a, b)=>{
+            console.log(a.releaseYear);
+            const bookA = new Date(a.releaseDate);
+            const bookB = new Date(b.releaseDate);
+            console.log(bookA);
+
+            return bookB - bookA;
+        })
+    }
+    
+    //Sort by Title or Author
+    if(sortBy === "title" || sortBy === "author"){
+        sortByTitleAuthor();
+    }
+
+    //Sort by Rating
+    if (sortBy === "rating") {
+        //Sort by Title first to ensure order on equal rating
+        const method = sortBy;
+        sortBy = "title";
+        sortByTitleAuthor();
+
+        //Sort by Rating
+        sortBy = method;
+        sortByRating();
+    }
+
+    //Sort by Release Date
+    if (sortBy === "year") {
+        console.log("sort by year");
+        sortByYear();
+    }
+}
+
 //Sorting Tools DOM
 const generateSortingDOM = () => {
     //Article
@@ -389,7 +468,6 @@ const generateSortingDOM = () => {
     selectDisplay.name = "";
     selectDisplay.id = "selectDisplay";
     selectDisplay.addEventListener("change", ()=>{
-        console.log("hello");
         generateBookDisplayDOM();
     });
 
@@ -410,6 +488,9 @@ const generateSortingDOM = () => {
     const sortBooks = document.createElement("select");
     sortBooks.name = "";
     sortBooks.id = "sortBooks";
+    sortBooks.addEventListener("change", ()=>{
+        generateBookDisplayDOM();
+    })
 
     const optionTitle = document.createElement("option");
     optionTitle.value = "title";
@@ -460,7 +541,7 @@ const createUserBooks = async () => {
     const dataAPI = responseAPI.user;
     console.log(dataAPI);
 
-    const books = [];
+    books = [];
     dataAPI.forEach((book)=>{
         console.log(book);
         const title = book.title;
