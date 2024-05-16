@@ -345,10 +345,13 @@ const generateNavDOM = () => {
     //Logout
     const navbarLogout = document.createElement("button");
     navbarLogout.id = "navbar_logout";
+    navbarLogout.type = "button";
     const logoutIcon = document.createElement("i");
     logoutIcon.className = "fa-solid fa-door-open";
     navbarLogout.appendChild(logoutIcon);
-
+    navbarLogout.addEventListener("click", ()=>{
+        logout();
+    });
 
     //Append to container 1
     container1.appendChild(navbarLogo);
@@ -470,6 +473,14 @@ const createUserBooks = async () => {
     return books;
 }
 
+//Logout Functionality
+const logout = () =>{
+    sessionStorage.clear();
+    document.getElementById("booksDisplay").remove();
+    document.getElementById("navbar").remove();
+    generateLoginDOM();
+    generateBookDisplayDOM();
+}
 
 
 /* Run on start */
