@@ -387,7 +387,13 @@ const generateNavDOM = () => {
 
 //Book Sorting Functionality
 sortBooks = () =>{
-    let sortBy = document.getElementById("sortBooks").value;
+    let sortBy = null;
+
+    if(!sessionStorage.getItem("activeUSer")){
+        sortBy = "title";
+    } else{
+        sortBy = document.getElementById("sortBooks").value;
+    }
 
     const sortByTitleAuthor = () =>{
         books.sort((a, b)=>{

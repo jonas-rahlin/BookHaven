@@ -6,7 +6,7 @@
 6. Set up basic API content DONE
 7. 	a) register / login DONE
 	b) public session DONE	 
-	c) logged in session -> create sorting functionality, create review function
+	c) logged in session -> create review function
 	d) create color themes
 
 
