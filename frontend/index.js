@@ -314,6 +314,52 @@ const createPublicBooks = async () =>{
 }
 
 /* User Section */
+
+//Navbar DOM
+const generateNavDOM = () => {
+    //Article
+    const article = document.createElement("article");
+    article.id = "navbar";
+
+    //Container 1
+    const container1 = document.createElement("div");
+    container1.className = "container";
+
+    //Logo
+    const navbarLogo = document.createElement("span");
+    navbarLogo.id = "navbar_logo";
+    navbarLogo.textContent = "BookHaven";
+
+    //Logout
+    const navbarLogout = document.createElement("button");
+    navbarLogout.id = "navbar_logout";
+    const logoutIcon = document.createElement("i");
+    logoutIcon.className = "fa-solid fa-door-open";
+    navbarLogout.appendChild(logoutIcon);
+
+    //Append to container 1
+    container1.appendChild(navbarLogo);
+    container1.appendChild(navbarLogout);
+
+    //Container 2
+    const container2 = document.createElement("div");
+    container2.className = "container";
+
+    //User
+    const navbarUser = document.createElement("span");
+    navbarUser.id = "navbar_user";
+    navbarUser.textContent = "Gandalf";
+
+    //Append to container 2
+    container2.appendChild(navbarUser);
+
+    //Append
+    article.appendChild(container1);
+    article.appendChild(container2);
+    document.querySelector("nav").appendChild(article);
+}
+
+//Sorting Tools DOM
 const generateSortingDOM = () => {
     //Article
     const article = document.createElement("article");
@@ -370,13 +416,8 @@ const generateSortingDOM = () => {
     //Append
     article.appendChild(selectDisplay);
     article.appendChild(sortBooks);
-    userSection.appendChild(article);
+    document.getElementById("navbar").children[1].appendChild(article);
 }
-
-const generateNavDOM = () => {
-
-}
-
 
 
 
@@ -390,9 +431,11 @@ if(!sessionStorage.getItem("activeUser")) {
 
 //If user is active, generate sorting DOM
 if(sessionStorage.getItem("activeUser")) {
+    generateNavDOM();
+    generateBookDisplayDOM();
     generateSortingDOM();
 }
 
-window.addEventListener('beforeunload', function() {
+/* window.addEventListener('beforeunload', function() {
     sessionStorage.clear();
-});
+}); */

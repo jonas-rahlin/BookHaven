@@ -56,8 +56,24 @@ input {
   border: solid 1px rgba(0, 0, 0, 0.75);
 }
 
-nav {
-  display: none;
+#navbar {
+  padding: 1rem;
+}
+
+#navbar .container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#navbar .container:nth-child(2) {
+  justify-content: flex-start;
+}
+
+#navbar button {
+  width: 2rem;
+  height: 2rem;
 }
 
 #navbar_logo {
