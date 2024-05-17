@@ -65,11 +65,11 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "user": {
+    "books": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::book.book",
-      "mappedBy": "books"
+      "mappedBy": "book"
     }
   }
 }

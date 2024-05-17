@@ -2,6 +2,8 @@ const loginSection = document.getElementById("loginSection");
 const publicSection = document.getElementById("publicSection");
 const userSection = document.getElementById("userSection");
 
+const isLoggedIn = !!sessionStorage.getItem("activeUser");
+        
 /* Global */
 
 // API Call Books
@@ -30,6 +32,7 @@ class Book {
         //Book
         const bookDiv = document.createElement("div");
         bookDiv.className = "book";
+        bookDiv.setAttribute("data", this.id);
     
         //Cover
         const img = document.createElement("img");
@@ -66,6 +69,38 @@ class Book {
         const ratingDiv = document.createElement("div");
         ratingDiv.className = "book_rating";
         bookDiv.appendChild(ratingDiv);
+
+        //Rate Book
+        if(isLoggedIn && document.getElementById("selectDisplay").value === "user"){
+            const containerDiv = document.createElement("div");
+            containerDiv.classList.add("container");
+
+            const p = document.createElement("p");
+            p.textContent = "My Rating:";
+            containerDiv.appendChild(p);
+            
+            const rateBook = document.createElement("select");
+            rateBook.setAttribute("data", "this.id");
+            rateBook.classList.add("selectRating");
+            rateBook.addEventListener("change", ()=>{
+                alert("changed");
+            })
+            
+            const optionMinus = document.createElement("option");
+            optionMinus.text = "-";
+            optionMinus.value = "0";
+            rateBook.appendChild(optionMinus);
+            
+            for (let i = 1; i <= 5; i++) {
+                const option = document.createElement("option");
+                option.text = i;
+                option.value = i;
+                rateBook.appendChild(option);
+            }
+            
+            containerDiv.appendChild(rateBook);
+            bookDiv.appendChild(containerDiv);
+        }
 
         return bookDiv;
     }
@@ -334,6 +369,8 @@ const createPublicBooks = async () =>{
 
 /* User Section */
 
+
+
 //Navbar DOM
 const generateNavDOM = () => {
     //Article
@@ -371,7 +408,7 @@ const generateNavDOM = () => {
     //User
     const navbarUser = document.createElement("span");
     navbarUser.id = "navbar_user";
-    navbarUser.textContent = "Gandalf";
+    navbarUser.textContent = JSON.parse(sessionStorage.getItem("activeUser")).username;
 
     //Append to container 2
     container2.appendChild(navbarUser);
@@ -534,7 +571,6 @@ const retrieveUserAPI = async () =>{
     const userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
     try{
         const response = await axios.get(`http://localhost:1337/api/users/${userID}?populate=deep,3`);
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Error retrieving API information");
@@ -544,8 +580,7 @@ const retrieveUserAPI = async () =>{
 //User Books Creation
 const createUserBooks = async () => {
     const responseAPI = await retrieveUserAPI();
-    const dataAPI = responseAPI.user;
-    console.log(dataAPI);
+    const dataAPI = responseAPI.books;
 
     books = [];
     dataAPI.forEach((book)=>{
@@ -587,3 +622,31 @@ if(sessionStorage.getItem("activeUser")) {
 /* window.addEventListener('beforeunload', function() {
     sessionStorage.clear();
 }); */
+
+
+
+
+
+
+const rateBook = async (bookId) =>{
+    const userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+    const myRating = 5;
+    const bookResponse = await axios.get(`http://localhost:1337/api/books/1`);
+    const currentRating = bookResponse.data.data.attributes.rating;
+    const timesRated = bookResponse.data.data.attributes.timesRated;
+    const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
+    console.log(updatedRating);
+
+    await axios.put(`http://localhost:1337/api/books/1`,
+    {
+        data:{
+            rating: updatedRating,
+            timesRated: timesRated+1
+        }
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${userKey}`
+        }
+    });
+}

@@ -41,11 +41,14 @@
       "max": 5,
       "min": 0
     },
-    "books": {
+    "book": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "user"
+      "inversedBy": "books"
+    },
+    "timesRated": {
+      "type": "integer"
     }
   }
 }
