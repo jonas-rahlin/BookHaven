@@ -73,9 +73,6 @@
       "relation": "oneToMany",
       "target": "api::book.book",
       "mappedBy": "book"
-    },
-    "ratedIDs": {
-      "type": "json"
     }
   }
 }

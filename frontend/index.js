@@ -46,19 +46,6 @@ class Book {
                 Authorization: `Bearer ${userKey}`
             }
         });
-
-        await axios.put(`http://localhost:1337/api/books/${bookID}`,
-        {
-            data:{
-                rating: updatedRating,
-                timesRated: timesRated+1
-            }
-        },
-        {
-            headers: {
-                Authorization: `Bearer ${userKey}`
-            }
-        });
     }
 
     //Remove Book Functioality
@@ -356,6 +343,8 @@ const login = async () => {
 
         //Save User Data
         sessionStorage.setItem("activeUser", JSON.stringify(userData));
+        userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+        userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
 
     } catch (error) {
         console.error("Login failed:", error);
@@ -710,8 +699,8 @@ const logout = () =>{
 }
 
 
-const userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
-const userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
+let userKey = null;
+let userID = null;
 
 
 
@@ -731,3 +720,14 @@ if(sessionStorage.getItem("activeUser")) {
     sessionStorage.clear();
 }); */
 
+const up = async () => {
+    await axios.put(`http://localhost:1337/api/users/1`,
+{
+    ratedIDs: [4]
+},
+{
+    headers: {
+        Authorization: `Bearer ${userKey}`
+    }
+});
+} 
