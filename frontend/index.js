@@ -3,7 +3,7 @@ const publicSection = document.getElementById("publicSection");
 const userSection = document.getElementById("userSection");
         
 /* Global */
-
+const isLoggedIn = null;
 // API Call Books
 const retrieveBooksAPI = async () =>{
     try{
@@ -67,18 +67,9 @@ class Book {
         const ratingDiv = document.createElement("div");
         ratingDiv.className = "book_rating";
         bookDiv.appendChild(ratingDiv);
-
-        //Logged In User Only
-        if(isLoggedIn){
-
-            bookDiv.addEventListener("click", async (event)=>{
-                const addConfirm = confirm("Do you want to add this book to your library?");
-                if(addConfirm){
-                    const bookID = event.currentTarget.getAttribute("data");
-                    await addBook(bookID);
-                }
-            })
-
+        
+        //Logged In User Only        
+        if(!!sessionStorage.getItem("activeUser")){
             //My Books Only
             if(document.getElementById("selectDisplay").value === "user"){
                 //Remove Book Event Listener
@@ -90,7 +81,7 @@ class Book {
                         generateBookDisplayDOM();
                     }
                 })
-
+                
                 //My Rating Selection
                 const containerDiv = document.createElement("div");
                 containerDiv.classList.add("container");
@@ -103,10 +94,14 @@ class Book {
                 containerDiv.appendChild(p);
                 
                 const rateBook = document.createElement("select");
-                rateBook.setAttribute("data", "this.id");
+
+                rateBook.setAttribute("data", this.id);
                 rateBook.classList.add("selectRating");
                 rateBook.addEventListener("change", ()=>{
-                    alert("changed");
+                    const myRating = rateBook.value;
+                    console.log(this.id, myRating);
+                    rateBook();
+                    generateBookDisplayDOM();
                 })
                 
                 const optionMinus = document.createElement("option");
@@ -123,6 +118,14 @@ class Book {
                 
                 containerDiv.appendChild(rateBook);
                 bookDiv.appendChild(containerDiv);
+            } else{
+                bookDiv.addEventListener("click", async (event)=>{
+                    const addConfirm = confirm("Do you want to add this book to your library?");
+                    if(addConfirm){
+                        const bookID = event.currentTarget.getAttribute("data");
+                        await addBook(bookID);
+                    }
+                })
             }
         }   
 
@@ -271,6 +274,8 @@ const login = async () => {
 
         //Save user data
         sessionStorage.setItem("activeUser", JSON.stringify(userData));
+        userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+        userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
 
         //Remove Login Section and Public Section
         publicSection.removeChild(publicSection.firstChild);
@@ -281,6 +286,9 @@ const login = async () => {
         //Generate user section
         generateNavDOM();
         generateBookDisplayDOM();
+
+        //Save User Data
+        sessionStorage.setItem("activeUser", JSON.stringify(userData));
 
     } catch (error) {
         console.error("Login failed:", error);
@@ -395,9 +403,7 @@ const createPublicBooks = async () =>{
 /* User Section */
 
 //User Info Variables
-const isLoggedIn = !!sessionStorage.getItem("activeUser");
-const userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
-const userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
+
 
 
 //Navbar DOM
@@ -668,6 +674,28 @@ const addBook = async (bookID) =>{
     );
 }
 
+const rateBook = async (bookID, rating) =>{
+    const myRating = rating;
+    const bookResponse = await axios.get(`http://localhost:1337/api/books/${bookID}`);
+    const currentRating = bookResponse.data.data.attributes.rating;
+    const timesRated = bookResponse.data.data.attributes.timesRated;
+    const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
+    console.log(updatedRating);
+
+    await axios.put(`http://localhost:1337/api/books/${bookID}`,
+    {
+
+        rating: updatedRating,
+        timesRated: timesRated+1
+
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${userKey}`
+        }
+    });
+}
+
 
 /* Run on start */
 
@@ -683,26 +711,4 @@ if(sessionStorage.getItem("activeUser")) {
 /* window.addEventListener('beforeunload', function() {
     sessionStorage.clear();
 }); */
-
-const rateBook = async (bookID) =>{
-    const myRating = 5;
-    const bookResponse = await axios.get(`http://localhost:1337/api/books/1`);
-    const currentRating = bookResponse.data.data.attributes.rating;
-    const timesRated = bookResponse.data.data.attributes.timesRated;
-    const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
-    console.log(updatedRating);
-
-    await axios.put(`http://localhost:1337/api/books/1`,
-    {
-        data:{
-            rating: updatedRating,
-            timesRated: timesRated+1
-        }
-    },
-    {
-        headers: {
-            Authorization: `Bearer ${userKey}`
-        }
-    });
-}
 

@@ -6,7 +6,7 @@
 6. Set up basic API content DONE
 7. 	a) register / login DONE *add scroll lock
 	b) public session DONE	 
-	c) logged in session -> create review function
+	c) logged in session -> aktivera ratebook -> fixa endast 1 review (reviewd books realtion)
 	d) create color themes
 
 

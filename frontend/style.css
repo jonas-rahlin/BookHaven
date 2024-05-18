@@ -57,7 +57,10 @@ input {
 }
 
 #navbar {
-  padding: 1rem;
+  padding: 2rem 3rem;
+  position: fixed;
+  background-color: var(--background);
+  width: 100%;
 }
 
 #navbar .container {
@@ -69,6 +72,9 @@ input {
 
 #navbar .container:nth-child(2) {
   justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
 }
 
 #navbar button {
@@ -79,6 +85,18 @@ input {
 #navbar_logo {
   font-family: "Merriweather", serif;
   font-size: 3rem;
+}
+
+#navbar_user {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+#sorting select {
+  font-size: 1rem;
+  margin: 0.5rem;
+  margin-left: 0;
+  padding: 0.1rem;
 }
 
 #loginSection {
@@ -162,6 +180,7 @@ h2 {
   margin: 1rem;
   width: 10rem;
   border-radius: 3px;
+  cursor: pointer;
 }
 
 .book_rating {
@@ -173,9 +192,12 @@ h2 {
   justify-content: space-between;
 }
 
-.book .selectRating {
-  width: 100%;
-  z-index: 1000;
+.selectRating {
+  display: inline-block;
+  font-size: 1rem;
+  margin: 0.5rem;
+  margin-left: 0;
+  padding: 0.1rem;
 }
 
 img {
