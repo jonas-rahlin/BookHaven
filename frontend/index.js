@@ -26,6 +26,63 @@ class Book {
         this.id = id;
     }
 
+    //Rate Book Functionality
+    async rateBook(bookID, rating){
+        const myRating = rating;
+        const bookResponse = await axios.get(`http://localhost:1337/api/books/${bookID}`);
+        const currentRating = bookResponse.data.data.attributes.rating;
+        const timesRated = bookResponse.data.data.attributes.timesRated;
+        const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
+        console.log(updatedRating);
+    
+        await axios.put(`http://localhost:1337/api/books/${bookID}`,
+        {
+            data:{
+                rating: updatedRating,
+                timesRated: timesRated+1
+            }
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${userKey}`
+            }
+        });
+        generateBookDisplayDOM();
+    }
+
+    //Remove Book Functioality
+    async removeBook(bookID){
+    await axios.put(`http://localhost:1337/api/users/${userID}`,
+    {
+            books:{
+                disconnect:[bookID]
+            }
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${userKey}`
+        }
+    }
+    );
+    }
+
+    //Add Book Functionality
+    async addBook(bookID){
+        await axios.put(`http://localhost:1337/api/users/${userID}`,
+        {
+                books:{
+                    connect:[bookID]
+                }
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${userKey}`
+            }
+        }
+        );
+    }
+
+    //Book DOM
     generateBookDOM(){
         //Book
         const bookDiv = document.createElement("div");
@@ -77,7 +134,7 @@ class Book {
                     const deleteConfirm = confirm("Do you want to delete this book?");
                     if(deleteConfirm){
                         const bookID = event.currentTarget.getAttribute("data");
-                        await removeBook(bookID);
+                        await this.removeBook(bookID);
                         generateBookDisplayDOM();
                     }
                 })
@@ -97,10 +154,9 @@ class Book {
 
                 rateBook.setAttribute("data", this.id);
                 rateBook.classList.add("selectRating");
-                rateBook.addEventListener("change", ()=>{
+                rateBook.addEventListener("change", async ()=>{
                     const myRating = rateBook.value;
-                    console.log(this.id, myRating);
-                    rateBook();
+                    await this.rateBook(this.id, myRating);
                     generateBookDisplayDOM();
                 })
                 
@@ -123,7 +179,7 @@ class Book {
                     const addConfirm = confirm("Do you want to add this book to your library?");
                     if(addConfirm){
                         const bookID = event.currentTarget.getAttribute("data");
-                        await addBook(bookID);
+                        await this.addBook(bookID);
                     }
                 })
             }
@@ -642,59 +698,11 @@ const logout = () =>{
     generateBookDisplayDOM();
 }
 
-//Remove Book Functioality
-const removeBook = async (bookID) =>{
-    await axios.put(`http://localhost:1337/api/users/${userID}`,
-    {
-            books:{
-                disconnect:[bookID]
-            }
-    },
-    {
-        headers: {
-            Authorization: `Bearer ${userKey}`
-        }
-    }
-    );
-}
 
-//Add Book Functionality
-const addBook = async (bookID) =>{
-    await axios.put(`http://localhost:1337/api/users/${userID}`,
-    {
-            books:{
-                connect:[bookID]
-            }
-    },
-    {
-        headers: {
-            Authorization: `Bearer ${userKey}`
-        }
-    }
-    );
-}
+const userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+const userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
 
-const rateBook = async (bookID, rating) =>{
-    const myRating = rating;
-    const bookResponse = await axios.get(`http://localhost:1337/api/books/${bookID}`);
-    const currentRating = bookResponse.data.data.attributes.rating;
-    const timesRated = bookResponse.data.data.attributes.timesRated;
-    const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
-    console.log(updatedRating);
 
-    await axios.put(`http://localhost:1337/api/books/${bookID}`,
-    {
-
-        rating: updatedRating,
-        timesRated: timesRated+1
-
-    },
-    {
-        headers: {
-            Authorization: `Bearer ${userKey}`
-        }
-    });
-}
 
 
 /* Run on start */
