@@ -21,3 +21,5 @@ update review score
 
 öppna upp allt till public.
 
+get json array, update Json Array, post Json array.
+

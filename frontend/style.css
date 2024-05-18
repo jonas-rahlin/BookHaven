@@ -5,36 +5,16 @@
 }
 
 /* Cozy Amber Theme */
-/* :root {
-  --background: #f3dc5a;
-  --font: #000000;
-  --button: #d46e42;
-  --details: #ea9f54;
-} */
-
 :root {
-  --background: #410775;
-  --font: #ffffff;
-  --button: #858484;
-  --details: #35195b;
+  --back: rgb(61, 64, 82);
+  --extra: #312622ff;
+  --button: rgb(216, 203, 143);
+  --front: rgb(94, 81, 90);
+  --font: #fcf9e6ff;
 }
 
-/* :root {
-  --background: #556b2f;
-  --font: #ffffff;
-  --button: #b66d38;
-  --details: #c2c20a;
-} */
-
-/* :root {
-  --background: #e8e8e8;
-  --font: #333333;
-  --button: #6db5f1;
-  --details: #808080;
-} */
-
 body {
-  background-color: var(--background);
+  background-color: var(--back);
   font-family: "Noto Sans", sans-serif;
   color: var(--font);
 }
@@ -57,10 +37,13 @@ input {
 }
 
 #navbar {
-  padding: 2rem 3rem;
+  padding: 1rem 3rem;
+  height: 11rem;
   position: fixed;
-  background-color: var(--background);
+  background-color: var(--back);
   width: 100%;
+  border-bottom: solid 2px var(--back);
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
 #navbar .container {
@@ -128,7 +111,7 @@ input {
   border-radius: 3px;
 
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  background-color: var(--details);
+  background-color: var(--front);
 }
 
 #headings {
@@ -160,13 +143,17 @@ h2 {
   padding: 2rem;
 
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  background-color: var(--details);
+  background-color: var(--front);
 
   z-index: 1001;
 }
 
 #publicSection {
   width: 100%;
+}
+
+#userSection {
+  margin-top: 12rem;
 }
 
 #booksDisplay {

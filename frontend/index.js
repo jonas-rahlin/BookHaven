@@ -3,7 +3,9 @@ const publicSection = document.getElementById("publicSection");
 const userSection = document.getElementById("userSection");
         
 /* Global */
-const isLoggedIn = null;
+let userKey = null;
+let userID = null;
+
 // API Call Books
 const retrieveBooksAPI = async () =>{
     try{
@@ -237,7 +239,12 @@ const generateBookDisplayDOM = async () =>{
         publicSection.appendChild(article);
     } else {
         userSection.appendChild(article);
+        loginSection.style.height = 0;
+        loginSection.style.padding = 0;
     }
+
+    userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+    userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
 }
 
 
@@ -328,8 +335,6 @@ const login = async () => {
 
         //Save user data
         sessionStorage.setItem("activeUser", JSON.stringify(userData));
-        userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
-        userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
 
         //Remove Login Section and Public Section
         publicSection.removeChild(publicSection.firstChild);
@@ -692,15 +697,8 @@ const createUserBooks = async () => {
 //Logout Functionality
 const logout = () =>{
     sessionStorage.clear();
-    document.getElementById("booksDisplay").remove();
-    document.getElementById("navbar").remove();
-    generateLoginDOM();
-    generateBookDisplayDOM();
+    location.reload();
 }
-
-
-let userKey = null;
-let userID = null;
 
 
 
@@ -723,11 +721,40 @@ if(sessionStorage.getItem("activeUser")) {
 const up = async () => {
     await axios.put(`http://localhost:1337/api/users/1`,
 {
-    ratedIDs: [4]
+    ratedBooks: [4]
 },
 {
     headers: {
         Authorization: `Bearer ${userKey}`
     }
 });
-} 
+}
+
+
+const updateRatedBooks = async (bookID, rating) =>{
+    const userAPI = await retrieveUserAPI();
+    const ratedBooks = userAPI.ratedBooks;
+    let found = false;
+
+    for (const review of ratedBooks) {
+        if(review[0] === bookID) {
+            review[1] = rating;
+            found = true;
+            break;
+        }
+    }
+
+    if(!found){
+        ratedBooks.push([bookID, rating]);
+    }
+
+    await axios.put(`http://localhost:1337/api/users/1`,
+    {
+        ratedBooks: ratedBooks
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${userKey}`
+        }
+    });
+}
