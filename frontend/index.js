@@ -28,12 +28,11 @@ class Book {
 
     //Rate Book Functionality
     async rateBook(bookID, rating){
-        const myRating = rating;
+        const myRating = parseInt(rating);
         const bookResponse = await axios.get(`http://localhost:1337/api/books/${bookID}`);
         const currentRating = bookResponse.data.data.attributes.rating;
         const timesRated = bookResponse.data.data.attributes.timesRated;
         const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
-        console.log(updatedRating);
     
         await axios.put(`http://localhost:1337/api/books/${bookID}`,
         {
@@ -47,7 +46,19 @@ class Book {
                 Authorization: `Bearer ${userKey}`
             }
         });
-        generateBookDisplayDOM();
+
+        await axios.put(`http://localhost:1337/api/books/${bookID}`,
+        {
+            data:{
+                rating: updatedRating,
+                timesRated: timesRated+1
+            }
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${userKey}`
+            }
+        });
     }
 
     //Remove Book Functioality
@@ -154,7 +165,7 @@ class Book {
 
                 rateBook.setAttribute("data", this.id);
                 rateBook.classList.add("selectRating");
-                rateBook.addEventListener("change", async ()=>{
+                rateBook.addEventListener("change", async (event)=>{
                     const myRating = rateBook.value;
                     await this.rateBook(this.id, myRating);
                     generateBookDisplayDOM();
