@@ -388,12 +388,12 @@ export interface ApiBookBook extends Schema.CollectionType {
         number
       > &
       Attribute.DefaultTo<0>;
+    timesRated: Attribute.Integer;
     book: Attribute.Relation<
       'api::book.book',
       'manyToOne',
       'plugin::users-permissions.user'
     >;
-    timesRated: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::book.book', 'oneToOne', 'admin::user'> &
@@ -842,6 +842,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    edit: Attribute.String;
     books: Attribute.Relation<
       'plugin::users-permissions.user',
       'oneToMany',

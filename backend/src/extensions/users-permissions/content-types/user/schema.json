@@ -65,6 +65,9 @@
       "inversedBy": "users",
       "configurable": false
     },
+    "edit": {
+      "type": "string"
+    },
     "books": {
       "type": "relation",
       "relation": "oneToMany",

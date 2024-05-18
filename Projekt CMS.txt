@@ -16,3 +16,8 @@ REMOVE SESSION STORAGE DELETE ON REFRESH
 skapa relation för READ och WANT TO READ
 
 
+save latest review (sök upp om användaren recenserat boken). add reviewved by på boken.
+update review score
+
+öppna upp allt till public.
+

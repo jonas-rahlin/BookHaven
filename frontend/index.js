@@ -1,8 +1,6 @@
 const loginSection = document.getElementById("loginSection");
 const publicSection = document.getElementById("publicSection");
 const userSection = document.getElementById("userSection");
-
-const isLoggedIn = !!sessionStorage.getItem("activeUser");
         
 /* Global */
 
@@ -70,37 +68,60 @@ class Book {
         ratingDiv.className = "book_rating";
         bookDiv.appendChild(ratingDiv);
 
-        //Rate Book
-        if(isLoggedIn && document.getElementById("selectDisplay").value === "user"){
-            const containerDiv = document.createElement("div");
-            containerDiv.classList.add("container");
+        //Logged In User Only
+        if(isLoggedIn){
 
-            const p = document.createElement("p");
-            p.textContent = "My Rating:";
-            containerDiv.appendChild(p);
-            
-            const rateBook = document.createElement("select");
-            rateBook.setAttribute("data", "this.id");
-            rateBook.classList.add("selectRating");
-            rateBook.addEventListener("change", ()=>{
-                alert("changed");
+            bookDiv.addEventListener("click", async (event)=>{
+                const addConfirm = confirm("Do you want to add this book to your library?");
+                if(addConfirm){
+                    const bookID = event.currentTarget.getAttribute("data");
+                    await addBook(bookID);
+                }
             })
-            
-            const optionMinus = document.createElement("option");
-            optionMinus.text = "-";
-            optionMinus.value = "0";
-            rateBook.appendChild(optionMinus);
-            
-            for (let i = 1; i <= 5; i++) {
-                const option = document.createElement("option");
-                option.text = i;
-                option.value = i;
-                rateBook.appendChild(option);
+
+            //My Books Only
+            if(document.getElementById("selectDisplay").value === "user"){
+                //Remove Book Event Listener
+                bookDiv.addEventListener("click", async (event)=>{
+                    const deleteConfirm = confirm("Do you want to delete this book?");
+                    if(deleteConfirm){
+                        const bookID = event.currentTarget.getAttribute("data");
+                        await removeBook(bookID);
+                        generateBookDisplayDOM();
+                    }
+                })
+
+                //My Rating Selection
+                const containerDiv = document.createElement("div");
+                containerDiv.classList.add("container");
+
+                const p = document.createElement("p");
+                p.textContent = "My Rating:";
+                containerDiv.appendChild(p);
+                
+                const rateBook = document.createElement("select");
+                rateBook.setAttribute("data", "this.id");
+                rateBook.classList.add("selectRating");
+                rateBook.addEventListener("change", ()=>{
+                    alert("changed");
+                })
+                
+                const optionMinus = document.createElement("option");
+                optionMinus.text = "-";
+                optionMinus.value = "0";
+                rateBook.appendChild(optionMinus);
+                
+                for (let i = 1; i <= 5; i++) {
+                    const option = document.createElement("option");
+                    option.text = i;
+                    option.value = i;
+                    rateBook.appendChild(option);
+                }
+                
+                containerDiv.appendChild(rateBook);
+                bookDiv.appendChild(containerDiv);
             }
-            
-            containerDiv.appendChild(rateBook);
-            bookDiv.appendChild(containerDiv);
-        }
+        }   
 
         return bookDiv;
     }
@@ -367,8 +388,13 @@ const createPublicBooks = async () =>{
     return books;
 }
 
+
 /* User Section */
 
+//User Info Variables
+const isLoggedIn = !!sessionStorage.getItem("activeUser");
+const userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+const userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
 
 
 //Navbar DOM
@@ -607,6 +633,38 @@ const logout = () =>{
     generateBookDisplayDOM();
 }
 
+//Remove Book Functioality
+const removeBook = async (bookID) =>{
+    await axios.put(`http://localhost:1337/api/users/${userID}`,
+    {
+            books:{
+                disconnect:[bookID]
+            }
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${userKey}`
+        }
+    }
+    );
+}
+
+//Add Book Functionality
+const addBook = async (bookID) =>{
+    await axios.put(`http://localhost:1337/api/users/${userID}`,
+    {
+            books:{
+                connect:[bookID]
+            }
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${userKey}`
+        }
+    }
+    );
+}
+
 
 /* Run on start */
 
@@ -623,13 +681,7 @@ if(sessionStorage.getItem("activeUser")) {
     sessionStorage.clear();
 }); */
 
-
-
-
-
-
-const rateBook = async (bookId) =>{
-    const userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+const rateBook = async (bookID) =>{
     const myRating = 5;
     const bookResponse = await axios.get(`http://localhost:1337/api/books/1`);
     const currentRating = bookResponse.data.data.attributes.rating;
@@ -650,3 +702,4 @@ const rateBook = async (bookId) =>{
         }
     });
 }
+
