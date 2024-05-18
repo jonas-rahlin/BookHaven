@@ -94,6 +94,9 @@ class Book {
                 //My Rating Selection
                 const containerDiv = document.createElement("div");
                 containerDiv.classList.add("container");
+                containerDiv.addEventListener("click", (event)=>{
+                    event.stopPropagation();
+                })
 
                 const p = document.createElement("p");
                 p.textContent = "My Rating:";
