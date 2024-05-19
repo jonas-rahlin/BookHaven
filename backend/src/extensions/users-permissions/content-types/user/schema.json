@@ -72,7 +72,8 @@
       "mappedBy": "book"
     },
     "ratedBooks": {
-      "type": "json"
+      "type": "json",
+      "default": []
     }
   }
 }

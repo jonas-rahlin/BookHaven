@@ -847,7 +847,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToMany',
       'api::book.book'
     >;
-    ratedBooks: Attribute.JSON;
+    ratedBooks: Attribute.JSON & Attribute.DefaultTo<[]>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
