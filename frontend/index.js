@@ -708,18 +708,16 @@ const generateSortingDOM = () => {
     optionYear.id = "sortBooks_year";
     optionYear.textContent = "Year";
 
+    const optionMyRatings = document.createElement("option");
+    optionMyRatings.value = "myRatings";
+    optionMyRatings.id = "sortBooks_myRatings";
+    optionMyRatings.textContent = "My Ratings";
+
     sortBooks.appendChild(optionTitle);
     sortBooks.appendChild(optionAuthor);
     sortBooks.appendChild(optionRating);
     sortBooks.appendChild(optionYear);
-    if(selectDisplay.value === "public"){
-        const optionMyRatings = document.createElement("option");
-        optionMyRatings.value = "myRatings";
-        optionMyRatings.id = "sortBooks_myRatings";
-        optionMyRatings.textContent = "My Ratings";
-
-        sortBooks.appendChild(optionMyRatings);
-    }
+    sortBooks.appendChild(optionMyRatings);
 
     article.appendChild(sortBooks);
 
