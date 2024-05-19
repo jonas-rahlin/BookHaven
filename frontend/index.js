@@ -213,6 +213,12 @@ class Book {
                     const myRating = rateBook.value;
                     await this.rateBook(this.id, myRating, userID);
                     await this.updateRatedBooks(this.id, parseInt(myRating));
+
+                    //Temporary Bugg Solution
+                    await retrieveUserAPI().then((user)=>{
+                        myBookRatings = user.ratedBooks;
+                    });
+
                     generateBookDisplayDOM();
                 })
                 
@@ -377,6 +383,7 @@ const generateLoginDOM = () => {
     registerBtn.textContent = "Create Account";
     registerBtn.addEventListener("click", ()=> {
         generateRegisterDOM();
+        document.body.classList.add("scrollLock");
     });
     article.appendChild(registerBtn);
 
@@ -435,6 +442,7 @@ const generateRegisterDOM = () => {
     const wrapper = document.createElement("div");
     wrapper.setAttribute("class", "wrapper");
     wrapper.addEventListener("click", ()=>{
+        document.body.classList.remove("scrollLock");
         wrapper.remove();
     })
 
@@ -588,7 +596,7 @@ const generateNavDOM = () => {
     generateSortingDOM();
 }
 
-//Temporary Bugg Solution -> "line 708"
+//Temporary Bugg Solution -> "line 708" + "line 217"
 let myBookRatings = null;
 
 //Book Sorting Functionality
@@ -679,10 +687,25 @@ sortBooks = () =>{
 
     //Sort by Release Date
     if (sortBy === "year") {
+        //Sort by Title first to ensure order on equal rating
+        const method = sortBy;
+        sortBy = "title";
+        sortByTitleAuthor();
+
+        //Sort by Year
+        sortBy = method;
         sortByYear();
     }
 
     if (sortBy === "myRatings"){
+        //Sort by Title first to ensure order on equal rating
+        const method = sortBy;
+        sortBy = "title";
+        sortByTitleAuthor();
+
+        //Sort by MyRatings
+        sortBy = method;
+
         sortByMyRating();
     }
 }
