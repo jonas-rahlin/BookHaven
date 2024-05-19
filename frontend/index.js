@@ -210,7 +210,6 @@ class Book {
                 rateBook.setAttribute("data", this.id);
                 rateBook.classList.add("selectRating");
                 rateBook.addEventListener("change", async (event)=>{
-                    
                     const myRating = rateBook.value;
                     await this.rateBook(this.id, myRating, userID);
                     await this.updateRatedBooks(this.id, parseInt(myRating));
@@ -228,9 +227,29 @@ class Book {
                     option.value = i;
                     rateBook.appendChild(option);
                 }
+
+                //Set My Rating Selectindex to User Book Review Score
+                const setSelectIndexValues = async () =>{
+                    const ratedBooks = await retrieveUserRatings();
+                    const idToMatch = this.id;
+                    let selectedIndex = -1;
+                    for (let i = 0; i < ratedBooks.length; i++) {
+                        if (ratedBooks[i][0] === idToMatch) {
+                            selectedIndex = ratedBooks[i][1];
+                            break;
+                        }
+                    }
+                    if(selectedIndex === -1){
+                        selectedIndex = 0;
+                    }
+    
+                    rateBook.selectedIndex = selectedIndex;
+                    
+                    containerDiv.appendChild(rateBook);
+                    bookDiv.appendChild(containerDiv); 
+                }
+                setSelectIndexValues();
                 
-                containerDiv.appendChild(rateBook);
-                bookDiv.appendChild(containerDiv);
             } else{
                 bookDiv.addEventListener("click", async (event)=>{
                     const addConfirm = confirm("Do you want to add this book to your library?");
@@ -269,11 +288,10 @@ const generateBookDisplayDOM = async () =>{
 
     sortBooks();
 
-    console.log(books);
-    for(const book of books) {
-        const bookDOM = book.generateBookDOM();
+    for(let i=0; i<books.length; i++) {
+        const bookDOM = books[i].generateBookDOM();
 
-        const rating = Math.round(book.rating);
+        const rating = Math.round(books[i].rating);
 
         if(rating > 0){
             for(let i=0; i<rating; i++){
@@ -519,10 +537,6 @@ const createPublicBooks = async () =>{
 
 /* User Section */
 
-//User Info Variables
-
-
-
 //Navbar DOM
 const generateNavDOM = () => {
     //Article
@@ -574,6 +588,9 @@ const generateNavDOM = () => {
     generateSortingDOM();
 }
 
+//Temporary Bugg Solution -> "line 708"
+let myBookRatings = null;
+
 //Book Sorting Functionality
 sortBooks = () =>{
     let sortBy = null;
@@ -583,6 +600,7 @@ sortBooks = () =>{
         sortBy = document.getElementById("sortBooks").value;
     }
 
+    //Sorting functions
     const sortByTitleAuthor = () =>{
         books.sort((a, b)=>{
             let bookA = a[sortBy].toLowerCase();
@@ -607,7 +625,6 @@ sortBooks = () =>{
     }
 
     const sortByRating = () =>{
-        console.log(books);
         books.sort((a, b)=>{
             const bookA = a.rating;
             const bookB = b.rating;
@@ -618,13 +635,29 @@ sortBooks = () =>{
 
     const sortByYear = () =>{
         books.sort((a, b)=>{
-            console.log(a.releaseYear);
             const bookA = new Date(a.releaseDate);
             const bookB = new Date(b.releaseDate);
-            console.log(bookA);
 
             return bookB - bookA;
         })
+    }
+
+    const sortByMyRating =  () =>{
+        const ratedBooks = myBookRatings;
+
+        books.sort((a, b) => {
+            let ratingA = ratedBooks.find(book => book[0] === a.id);
+            let ratingB = ratedBooks.find(book => book[0] === b.id);
+        
+            // Handle cases where ratings are not found (0 rating)
+            if (!ratingA && !ratingB) return 0; // No change in order
+            if (!ratingA) return 1; // Put book a after book b
+            if (!ratingB) return -1; // Put book b after book a
+        
+            // Sorting based on rating value
+            return ratingB[1] - ratingA[1];
+        });
+
     }
     
     //Sort by Title or Author
@@ -646,8 +679,11 @@ sortBooks = () =>{
 
     //Sort by Release Date
     if (sortBy === "year") {
-        console.log("sort by year");
         sortByYear();
+    }
+
+    if (sortBy === "myRatings"){
+        sortByMyRating();
     }
 }
 
@@ -666,6 +702,12 @@ const generateSortingDOM = () => {
 
         if(selectDisplay.value === "user"){
             optionMyRatings.classList.remove("displayNone");
+
+            //Temporary Bugg Solution
+            retrieveUserAPI().then((user)=>{
+                myBookRatings = user.ratedBooks;
+            });
+
         } else{
             optionMyRatings.classList.add("displayNone");
         }
@@ -742,13 +784,21 @@ const retrieveUserAPI = async () =>{
     }
 }
 
+//API Call User Ratings
+const retrieveUserRatings = async () =>{
+    const user = await retrieveUserAPI();
+    const ratedBooks = user.ratedBooks;
+
+    return ratedBooks;
+}
+
 //User Books Creation
 const createUserBooks = async () => {
     const responseAPI = await retrieveUserAPI();
-    const dataAPI = responseAPI.books;
+    const booksData = responseAPI.books;
 
     books = [];
-    dataAPI.forEach((book)=>{
+    booksData.forEach((book)=>{
         const title = book.title;
         const author = book.author;
         const pages = book.pages;
