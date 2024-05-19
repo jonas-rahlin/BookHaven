@@ -29,19 +29,74 @@ class Book {
     }
 
     //Rate Book Functionality
-    async rateBook(bookID, rating){
+    async rateBook(bookID, rating, userID){
+        //Check if user has rated book previously
+        const userResponse = await axios.get(`http://localhost:1337/api/users/${userID}`);
+        const ratedBooks = userResponse.data.ratedBooks;
+        const alreadyRated = ratedBooks.find(review => review[0] === bookID);
+
+        //Rating Average Calculator
         const myRating = parseInt(rating);
         const bookResponse = await axios.get(`http://localhost:1337/api/books/${bookID}`);
         const currentRating = bookResponse.data.data.attributes.rating;
         const timesRated = bookResponse.data.data.attributes.timesRated;
         const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
-    
+
+        //If rated remove old Review
+        if(alreadyRated) {
+            const oldRating = alreadyRated[1];
+            const updatedRatingNegative = ((currentRating * timesRated) - oldRating) / (timesRated - 1);
+            await axios.put(`http://localhost:1337/api/books/${bookID}`,
+            {
+                data:{
+                    rating: updatedRatingNegative,
+                    timesRated: -1
+                }
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${userKey}`
+                }
+            });      
+        }
+
+        //Add new Rating
         await axios.put(`http://localhost:1337/api/books/${bookID}`,
         {
             data:{
                 rating: updatedRating,
                 timesRated: timesRated+1
             }
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${userKey}`
+            }
+        });
+    }
+
+    //Updated Users Reviewed Books
+    async updateRatedBooks(bookID, rating){
+        const userAPI = await retrieveUserAPI();
+        const ratedBooks = userAPI.ratedBooks;
+        let found = false;
+        console.log(ratedBooks);
+    
+        for (const review of ratedBooks) {
+            if(review[0] === bookID) {
+                review[1] = rating;
+                found = true;
+                break;
+            }
+        }
+    
+        if(!found){
+            ratedBooks.push([bookID, rating]);
+        }
+    
+        await axios.put(`http://localhost:1337/api/users/1`,
+        {
+            ratedBooks: ratedBooks
         },
         {
             headers: {
@@ -155,8 +210,10 @@ class Book {
                 rateBook.setAttribute("data", this.id);
                 rateBook.classList.add("selectRating");
                 rateBook.addEventListener("change", async (event)=>{
+                    
                     const myRating = rateBook.value;
-                    await this.rateBook(this.id, myRating);
+                    await this.rateBook(this.id, myRating, userID);
+                    await this.updateRatedBooks(this.id, parseInt(myRating));
                     generateBookDisplayDOM();
                 })
                 
@@ -680,7 +737,6 @@ const createUserBooks = async () => {
 
     books = [];
     dataAPI.forEach((book)=>{
-        console.log(book);
         const title = book.title;
         const author = book.author;
         const pages = book.pages;
@@ -720,37 +776,8 @@ if(sessionStorage.getItem("activeUser")) {
 
 const up = async () => {
     await axios.put(`http://localhost:1337/api/users/1`,
-{
-    ratedBooks: [4]
-},
-{
-    headers: {
-        Authorization: `Bearer ${userKey}`
-    }
-});
-}
-
-
-const updateRatedBooks = async (bookID, rating) =>{
-    const userAPI = await retrieveUserAPI();
-    const ratedBooks = userAPI.ratedBooks;
-    let found = false;
-
-    for (const review of ratedBooks) {
-        if(review[0] === bookID) {
-            review[1] = rating;
-            found = true;
-            break;
-        }
-    }
-
-    if(!found){
-        ratedBooks.push([bookID, rating]);
-    }
-
-    await axios.put(`http://localhost:1337/api/users/1`,
     {
-        ratedBooks: ratedBooks
+        ratedBooks: [4]
     },
     {
         headers: {

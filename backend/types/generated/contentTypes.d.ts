@@ -842,7 +842,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
-    edit: Attribute.String;
     books: Attribute.Relation<
       'plugin::users-permissions.user',
       'oneToMany',

@@ -6,20 +6,10 @@
 6. Set up basic API content DONE
 7. 	a) register / login DONE *add scroll lock
 	b) public session DONE	 
-	c) logged in session -> aktivera ratebook -> fixa endast 1 review (reviewd books realtion)
+	c) logged in session DONE
 	d) create color themes
 
 
 REMOVE SESSION STORAGE DELETE ON REFRESH
 
-
-skapa relation för READ och WANT TO READ
-
-
-save latest review (sök upp om användaren recenserat boken). add reviewved by på boken.
-update review score
-
-öppna upp allt till public.
-
-get json array, update Json Array, post Json array.
-
+add array on ratedBooks on user creation.
