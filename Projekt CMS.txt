@@ -8,8 +8,8 @@
 	b) public session DONE	 
 	c) logged in session DONE
 	d) create color themes
+8. Styling
+9. Reformat Code
 
 
 REMOVE SESSION STORAGE DELETE ON REFRESH
-
-add array on ratedBooks on user creation.

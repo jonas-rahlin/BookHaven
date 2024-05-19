@@ -300,10 +300,11 @@ const generateBookDisplayDOM = async () =>{
         loginSection.style.padding = 0;
     }
 
-    userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
-    userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
+    if(JSON.parse(sessionStorage.getItem("activeUser")) !== null){
+        userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+        userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
+    }
 }
-
 
 /* Login Section */
 
@@ -405,8 +406,6 @@ const login = async () => {
 
         //Save User Data
         sessionStorage.setItem("activeUser", JSON.stringify(userData));
-        userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
-        userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
 
     } catch (error) {
         console.error("Login failed:", error);
@@ -578,8 +577,7 @@ const generateNavDOM = () => {
 //Book Sorting Functionality
 sortBooks = () =>{
     let sortBy = null;
-
-    if(!sessionStorage.getItem("activeUSer")){
+    if(userKey === null){
         sortBy = "title";
     } else{
         sortBy = document.getElementById("sortBooks").value;
