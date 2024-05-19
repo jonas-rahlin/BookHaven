@@ -382,6 +382,10 @@ const generateLoginDOM = () => {
     registerBtn.setAttribute("id", "register_btn");
     registerBtn.textContent = "Create Account";
     registerBtn.addEventListener("click", ()=> {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
         generateRegisterDOM();
         document.body.classList.add("scrollLock");
     });
@@ -564,9 +568,8 @@ const generateNavDOM = () => {
     const navbarLogout = document.createElement("button");
     navbarLogout.id = "navbar_logout";
     navbarLogout.type = "button";
-    const logoutIcon = document.createElement("i");
-    logoutIcon.className = "fa-solid fa-door-open";
-    navbarLogout.appendChild(logoutIcon);
+    navbarLogout.textContent = "Log Out";
+
     navbarLogout.addEventListener("click", ()=>{
         logout();
     });

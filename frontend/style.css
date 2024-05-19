@@ -4,13 +4,46 @@
   box-sizing: border-box;
 }
 
-/* Cozy Amber Theme */
-:root {
-  --back: rgb(61, 64, 82);
-  --extra: #312622ff;
-  --button: rgb(216, 203, 143);
-  --front: rgb(94, 81, 90);
+/* Library */
+
+/* Twilight Moon */
+/* :root {
+  --back: rgb(45, 33, 63);
+  --extra: rgb(70, 45, 90);
+  --button: rgb(123, 72, 132);
+  --button2: rgb(133, 110, 142);
+  --front: rgb(70, 48, 84);
   --font: #fcf9e6ff;
+} */
+
+/* Zen Sky */
+/* :root {
+  --back: rgb(118, 159, 181);
+  --extra: rgb(92, 119, 137);
+  --button: rgb(168, 195, 215);
+  --button2: rgb(97, 136, 167);
+  --front: rgb(81, 110, 130);
+  --font: #222222ff;
+} */
+
+/* Red Roses */
+/* :root {
+  --back: rgb(40, 16, 22);
+  --extra: rgb(61, 30, 40);
+  --button: rgb(175, 64, 87);
+  --button2: rgb(127, 48, 65);
+  --front: rgb(91, 43, 58);
+  --font: rgb(242, 242, 242);
+} */
+
+/* Only Ooze */
+:root {
+  --back: rgb(35, 68, 89);
+  --extra: rgb(49, 92, 115);
+  --button: rgb(95, 159, 159);
+  --button2: rgb(77, 114, 114);
+  --front: rgb(25, 52, 68);
+  --font: #f2f2f2ff;
 }
 
 body {
@@ -23,6 +56,20 @@ button {
   cursor: pointer;
   background-color: var(--button);
   color: var(--font);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+#register_btn {
+  background-color: var(--button2);
+}
+
+#submitUser_btn {
+  background-color: var(--button2);
+}
+
+input {
+  font-size: 1rem;
 }
 
 button,
@@ -34,11 +81,11 @@ input {
   border: none;
   width: 100%;
   border: solid 1px rgba(0, 0, 0, 0.75);
+  font-weight: 500;
 }
 
 #navbar {
   padding: 1rem 2rem;
-  height: 11rem;
   position: fixed;
   background-color: var(--front);
   width: 100%;
@@ -61,8 +108,8 @@ input {
 }
 
 #navbar button {
-  width: 2rem;
-  height: 2rem;
+  width: 6rem;
+  font-size: 1rem;
 }
 
 #navbar_logo {
@@ -71,8 +118,7 @@ input {
 }
 
 #navbar_user {
-  font-size: 2rem;
-  margin-right: 1rem;
+  font-size: 1.5rem;
 }
 
 #sorting select {
@@ -120,12 +166,12 @@ input {
 }
 
 h1 {
-  font-size: 5rem;
+  font-size: 3rem;
   font-family: "Merriweather", serif;
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 #register {
