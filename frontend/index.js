@@ -842,8 +842,6 @@ const logout = () =>{
 }
 
 
-
-
 /* Run on start */
 
 //Check if there is an active user or not, then run appropriate DOM creations
@@ -853,20 +851,4 @@ if(sessionStorage.getItem("activeUser")) {
 } else {
     generateLoginDOM();
     generateBookDisplayDOM();
-}
-
-/* window.addEventListener('beforeunload', function() {
-    sessionStorage.clear();
-}); */
-
-const up = async () => {
-    await axios.put(`http://localhost:1337/api/users/1`,
-    {
-        ratedBooks: [4]
-    },
-    {
-        headers: {
-            Authorization: `Bearer ${userKey}`
-        }
-    });
 }

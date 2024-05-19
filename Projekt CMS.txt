@@ -4,12 +4,12 @@
 4. Plan project DONE
 5. HTML Structure template DONE
 6. Set up basic API content DONE
-7. 	a) register / login DONE *add scroll lock
+7. 	a) register / login DONE
 	b) public session DONE	 
 	c) logged in session DONE
 	d) create color themes
 8. Styling
-9. Reformat Code
+9. Reformat Code + error handling
 
 
 REMOVE SESSION STORAGE DELETE ON REFRESH
