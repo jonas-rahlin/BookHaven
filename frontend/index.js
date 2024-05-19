@@ -663,6 +663,12 @@ const generateSortingDOM = () => {
     selectDisplay.id = "selectDisplay";
     selectDisplay.addEventListener("change", ()=>{
         generateBookDisplayDOM();
+
+        if(selectDisplay.value === "user"){
+            optionMyRatings.classList.remove("displayNone");
+        } else{
+            optionMyRatings.classList.add("displayNone");
+        }
     });
 
     const optionPublic = document.createElement("option");
@@ -712,6 +718,7 @@ const generateSortingDOM = () => {
     optionMyRatings.value = "myRatings";
     optionMyRatings.id = "sortBooks_myRatings";
     optionMyRatings.textContent = "My Ratings";
+    optionMyRatings.classList.add("displayNone");
 
     sortBooks.appendChild(optionTitle);
     sortBooks.appendChild(optionAuthor);

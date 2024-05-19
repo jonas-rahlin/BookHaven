@@ -192,3 +192,8 @@ img {
   height: 15rem;
   border-radius: 3px;
 }
+
+/* JS Styling */
+.displayNone {
+  display: none;
+}
