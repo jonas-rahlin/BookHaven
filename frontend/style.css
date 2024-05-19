@@ -37,10 +37,10 @@ input {
 }
 
 #navbar {
-  padding: 1rem 3rem;
+  padding: 1rem 2rem;
   height: 11rem;
   position: fixed;
-  background-color: var(--back);
+  background-color: var(--front);
   width: 100%;
   border-bottom: solid 2px var(--back);
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;

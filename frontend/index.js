@@ -678,6 +678,8 @@ const generateSortingDOM = () => {
     selectDisplay.appendChild(optionPublic);
     selectDisplay.appendChild(optionUser);
 
+    article.appendChild(selectDisplay);
+
     //Select Sorting
     const sortBooks = document.createElement("select");
     sortBooks.name = "";
@@ -710,10 +712,17 @@ const generateSortingDOM = () => {
     sortBooks.appendChild(optionAuthor);
     sortBooks.appendChild(optionRating);
     sortBooks.appendChild(optionYear);
+    if(selectDisplay.value === "public"){
+        const optionMyRatings = document.createElement("option");
+        optionMyRatings.value = "myRatings";
+        optionMyRatings.id = "sortBooks_myRatings";
+        optionMyRatings.textContent = "My Ratings";
 
-    //Append
-    article.appendChild(selectDisplay);
+        sortBooks.appendChild(optionMyRatings);
+    }
+
     article.appendChild(sortBooks);
+
     document.getElementById("navbar").children[1].appendChild(article); 
 }
 
