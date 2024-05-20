@@ -8,5 +8,5 @@
 	b) public session DONE	 
 	c) logged in session DONE
 	d) create color themes DONE
-8. Styling DONE (tweak if time)
-9. Reformat Code + error handling
+8. Styling DONE (tweak if time) DONE
+9. Reformat Code + error handling DONE
