@@ -855,3 +855,22 @@ if(sessionStorage.getItem("activeUser")) {
     generateLoginDOM();
     generateBookDisplayDOM();
 }
+
+//Set Theme
+const setTheme = async () =>{
+    const response = await axios.get(`http://localhost:1337/api/themes`);
+    const themes = response.data.data;
+    let activeTheme = null;
+
+    for (const theme of themes) {
+        if(theme.attributes.active === true){
+            activeTheme = theme.attributes.css;
+        } else {
+            activeTheme = themes[1].attributes.css;
+        }
+        document.querySelector("style").textContent = activeTheme;
+    }
+}
+
+setTheme();
+

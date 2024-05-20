@@ -1,10 +1,11 @@
 {
-  "kind": "singleType",
+  "kind": "collectionType",
   "collectionName": "themes",
   "info": {
     "singularName": "theme",
     "pluralName": "themes",
-    "displayName": "theme"
+    "displayName": "theme",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -14,8 +15,11 @@
     "name": {
       "type": "string"
     },
-    "status": {
+    "active": {
       "type": "boolean"
+    },
+    "css": {
+      "type": "text"
     }
   }
 }

@@ -403,19 +403,21 @@ export interface ApiBookBook extends Schema.CollectionType {
   };
 }
 
-export interface ApiThemeTheme extends Schema.SingleType {
+export interface ApiThemeTheme extends Schema.CollectionType {
   collectionName: 'themes';
   info: {
     singularName: 'theme';
     pluralName: 'themes';
     displayName: 'theme';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     name: Attribute.String;
-    status: Attribute.Boolean;
+    active: Attribute.Boolean;
+    css: Attribute.Text;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

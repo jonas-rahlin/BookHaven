@@ -4,48 +4,6 @@
   box-sizing: border-box;
 }
 
-/* Library */
-
-/* Twilight Moon */
-/* :root {
-  --back: rgb(45, 33, 63);
-  --extra: rgb(70, 45, 90);
-  --button: rgb(123, 72, 132);
-  --button2: rgb(133, 110, 142);
-  --front: rgb(70, 48, 84);
-  --font: #fcf9e6ff;
-} */
-
-/* Zen Sky */
-/* :root {
-  --back: rgb(118, 159, 181);
-  --extra: rgb(92, 119, 137);
-  --button: rgb(168, 195, 215);
-  --button2: rgb(97, 136, 167);
-  --front: rgb(81, 110, 130);
-  --font: #222222ff;
-} */
-
-/* Red Roses */
-/* :root {
-  --back: rgb(40, 16, 22);
-  --extra: rgb(61, 30, 40);
-  --button: rgb(175, 64, 87);
-  --button2: rgb(127, 48, 65);
-  --front: rgb(91, 43, 58);
-  --font: rgb(242, 242, 242);
-} */
-
-/* Only Ooze */
-:root {
-  --back: rgb(35, 68, 89);
-  --extra: rgb(49, 92, 115);
-  --button: rgb(95, 159, 159);
-  --button2: rgb(77, 114, 114);
-  --front: rgb(25, 52, 68);
-  --font: #f2f2f2ff;
-}
-
 body {
   background-color: var(--back);
   font-family: "Noto Sans", sans-serif;
