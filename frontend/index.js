@@ -6,13 +6,29 @@ const userSection = document.getElementById("userSection");
 let userKey = null;
 let userID = null;
 
-// API Call Books
+//API Call Books
 const retrieveBooksAPI = async () =>{
     try{
         const response = await axios.get("http://localhost:1337/api/books?populate=deep,2");
         return response.data;
     } catch (error) {
         console.error("Error retrieving API information");
+    }
+}
+
+//Set Theme
+const setTheme = async () =>{
+    const response = await axios.get(`http://localhost:1337/api/themes`);
+    const themes = response.data.data;
+    let activeTheme = null;
+
+    for (const theme of themes) {
+        if(theme.attributes.active === true){
+            activeTheme = theme.attributes.css;
+        } else {
+            activeTheme = themes[1].attributes.css;
+        }
+        document.querySelector("style").textContent = activeTheme;
     }
 }
 
@@ -857,20 +873,5 @@ if(sessionStorage.getItem("activeUser")) {
 }
 
 //Set Theme
-const setTheme = async () =>{
-    const response = await axios.get(`http://localhost:1337/api/themes`);
-    const themes = response.data.data;
-    let activeTheme = null;
-
-    for (const theme of themes) {
-        if(theme.attributes.active === true){
-            activeTheme = theme.attributes.css;
-        } else {
-            activeTheme = themes[1].attributes.css;
-        }
-        document.querySelector("style").textContent = activeTheme;
-    }
-}
-
 setTheme();
 

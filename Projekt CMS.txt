@@ -7,9 +7,6 @@
 7. 	a) register / login DONE
 	b) public session DONE	 
 	c) logged in session DONE
-	d) create color themes - theme i strapi -> 4 teman -> välj ett i strapi.
-8. Styling
+	d) create color themes DONE
+8. Styling DONE (tweak if time)
 9. Reformat Code + error handling
-
-
-REMOVE SESSION STORAGE DELETE ON REFRESH
