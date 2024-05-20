@@ -17,6 +17,9 @@ button {
   font-size: 1.3rem;
   font-weight: 600;
 }
+button:hover {
+  opacity: 0.9;
+}
 
 #register_btn {
   background-color: var(--button2);

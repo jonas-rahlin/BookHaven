@@ -1,10 +1,15 @@
+
+        
+/* Global */
+
+//Variables for storing JWT and UserID
+let userKey = null;
+let userID = null;
+
+//Variables for targeting main sections
 const loginSection = document.getElementById("loginSection");
 const publicSection = document.getElementById("publicSection");
 const userSection = document.getElementById("userSection");
-        
-/* Global */
-let userKey = null;
-let userID = null;
 
 //API Call Books
 const retrieveBooksAPI = async () =>{
@@ -16,23 +21,10 @@ const retrieveBooksAPI = async () =>{
     }
 }
 
-//Set Theme
-const setTheme = async () =>{
-    const response = await axios.get(`http://localhost:1337/api/themes`);
-    const themes = response.data.data;
-    let activeTheme = null;
+// Array for storing Books
+let books = [];
 
-    for (const theme of themes) {
-        if(theme.attributes.active === true){
-            activeTheme = theme.attributes.css;
-        } else {
-            activeTheme = themes[1].attributes.css;
-        }
-        document.querySelector("style").textContent = activeTheme;
-    }
-}
-
-// Book Class
+//Book Class
 class Book {
     constructor(title, author, pages, releaseDate, cover, rating, id){
         this.title = title;
@@ -287,10 +279,7 @@ class Book {
     }
 }
 
-// Array for storing Books
-let books = [];
-
-//Books Display DOM
+//Books Display DOM Generation
 const generateBookDisplayDOM = async () =>{
     const booksDisplay = document.getElementById("booksDisplay");
     if(booksDisplay){
@@ -346,9 +335,26 @@ const generateBookDisplayDOM = async () =>{
     }
 }
 
+//Set Theme
+const setTheme = async () =>{
+    const response = await axios.get(`http://localhost:1337/api/themes`);
+    const themes = response.data.data;
+    let activeTheme = null;
+
+    for (const theme of themes) {
+        if(theme.attributes.active === true){
+            activeTheme = theme.attributes.css;
+        } else {
+            activeTheme = themes[1].attributes.css;
+        }
+        document.querySelector("style").textContent = activeTheme;
+    }
+}
+
+
 /* Login Section */
 
-//Login DOM
+//Login DOM Generation
 const generateLoginDOM = () => {
     //Headings Container
     const headings = document.createElement("div");
@@ -411,12 +417,14 @@ const generateLoginDOM = () => {
     loginSection.appendChild(headings);
     loginSection.appendChild(article);
 }
+
 //Login Input Values
 const getLoginInput = () =>{
     const username = document.getElementById("login_username").value;
     const password = document.getElementById("login_password").value;
     return {username, password};
 }
+
 //Login Functionality
 const login = async () => {
     try {
@@ -456,6 +464,7 @@ const login = async () => {
         console.error("Login failed:", error);
     }
 }
+
 
 //Register DOM
 const generateRegisterDOM = () => {
@@ -509,6 +518,7 @@ const generateRegisterDOM = () => {
     wrapper.appendChild(article);
     loginSection.appendChild(wrapper);
 }
+
 //Register Input Values
 const getRegisterInput = () =>{
     const username = document.getElementById("register_username").value;
@@ -517,6 +527,7 @@ const getRegisterInput = () =>{
 
     return {username, email, password};
 }
+
 //Register Functionality
 const register = async () => {
     try {
@@ -565,7 +576,7 @@ const createPublicBooks = async () =>{
 
 /* User Section */
 
-//Navbar DOM
+//Navbar DOM Generation
 const generateNavDOM = () => {
     //Article
     const article = document.createElement("article");
@@ -615,7 +626,7 @@ const generateNavDOM = () => {
     generateSortingDOM();
 }
 
-//Temporary Bugg Solution -> "line 708" + "line 217"
+//Temporary Bug Solution -> "line 708" + "line 217"
 let myBookRatings = null;
 
 //Book Sorting Functionality
@@ -729,7 +740,7 @@ sortBooks = () =>{
     }
 }
 
-//Sorting Tools DOM
+//Sorting Tools DOM Generations
 const generateSortingDOM = () => {
     //Article
     const article = document.createElement("article");
@@ -861,7 +872,7 @@ const logout = () =>{
 }
 
 
-/* Run on start */
+/* Run on Refresh */
 
 //Check if there is an active user or not, then run appropriate DOM creations
 if(sessionStorage.getItem("activeUser")) {
