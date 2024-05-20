@@ -1,6 +1,4 @@
-
-        
-/* Global */
+ /* Global */
 
 //Variables for storing JWT and UserID
 let userKey = null;
@@ -18,6 +16,7 @@ const retrieveBooksAPI = async () =>{
         return response.data;
     } catch (error) {
         console.error("Error retrieving API information");
+        throw error;
     }
 }
 
@@ -26,6 +25,7 @@ let books = [];
 
 //Book Class
 class Book {
+    //Constructor
     constructor(title, author, pages, releaseDate, cover, rating, id){
         this.title = title;
         this.author = author;
@@ -38,49 +38,54 @@ class Book {
 
     //Rate Book Functionality
     async rateBook(bookID, rating, userID){
-        //Check if user has rated book previously
-        const userResponse = await axios.get(`http://localhost:1337/api/users/${userID}`);
-        const ratedBooks = userResponse.data.ratedBooks;
-        const alreadyRated = ratedBooks.find(review => review[0] === bookID);
+        try{
+            //Check if user has rated book previously
+            const userResponse = await axios.get(`http://localhost:1337/api/users/${userID}`);
+            const ratedBooks = userResponse.data.ratedBooks;
+            const alreadyRated = ratedBooks.find(review => review[0] === bookID);
 
-        //Rating Average Calculator
-        const myRating = parseInt(rating);
-        const bookResponse = await axios.get(`http://localhost:1337/api/books/${bookID}`);
-        const currentRating = bookResponse.data.data.attributes.rating;
-        const timesRated = bookResponse.data.data.attributes.timesRated;
-        const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
+            //Rating Average Calculator
+            const myRating = parseInt(rating);
+            const bookResponse = await axios.get(`http://localhost:1337/api/books/${bookID}`);
+            const currentRating = bookResponse.data.data.attributes.rating;
+            const timesRated = bookResponse.data.data.attributes.timesRated;
+            const updatedRating = ((currentRating * timesRated) + myRating) / (timesRated + 1);
 
-        //If rated remove old Review
-        if(alreadyRated) {
-            const oldRating = alreadyRated[1];
-            const updatedRatingNegative = ((currentRating * timesRated) - oldRating) / (timesRated - 1);
+            //If rated remove old Review
+            if(alreadyRated) {
+                const oldRating = alreadyRated[1];
+                const updatedRatingNegative = ((currentRating * timesRated) - oldRating) / (timesRated - 1);
+                await axios.put(`http://localhost:1337/api/books/${bookID}`,
+                {
+                    data:{
+                        rating: updatedRatingNegative,
+                        timesRated: -1
+                    }
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${userKey}`
+                    }
+                });      
+            }
+
+            //Add new Rating
             await axios.put(`http://localhost:1337/api/books/${bookID}`,
             {
                 data:{
-                    rating: updatedRatingNegative,
-                    timesRated: -1
+                    rating: updatedRating,
+                    timesRated: timesRated+1
                 }
             },
             {
                 headers: {
                     Authorization: `Bearer ${userKey}`
                 }
-            });      
+            });
+        } catch{
+            console.log("Error Rating Book");
+            throw error;
         }
-
-        //Add new Rating
-        await axios.put(`http://localhost:1337/api/books/${bookID}`,
-        {
-            data:{
-                rating: updatedRating,
-                timesRated: timesRated+1
-            }
-        },
-        {
-            headers: {
-                Authorization: `Bearer ${userKey}`
-            }
-        });
     }
 
     //Updated Users Reviewed Books
@@ -281,73 +286,93 @@ class Book {
 
 //Books Display DOM Generation
 const generateBookDisplayDOM = async () =>{
-    const booksDisplay = document.getElementById("booksDisplay");
-    if(booksDisplay){
-        booksDisplay.remove();
-    }
+    try{
+        const booksDisplay = document.getElementById("booksDisplay");
+        
+        //Remove Old Books Display
+        if(booksDisplay){
+            booksDisplay.remove();
+        }
 
-    const article = document.createElement("article");
-    article.setAttribute("id", "booksDisplay");
+        //Create Books Display
+        const article = document.createElement("article");
+        article.setAttribute("id", "booksDisplay");
 
-    let books = null;
-    const selectDisplay = document.getElementById("selectDisplay");
-    if(selectDisplay && selectDisplay.value === "user") {
-        books = await createUserBooks();
-    } else {
-        books = await createPublicBooks();
-    }
+        //Create Books based on User Type
+        let books = null;
+        const selectDisplay = document.getElementById("selectDisplay");
+        if(selectDisplay && selectDisplay.value === "user") {
+            books = await createUserBooks();
+        } else {
+            books = await createPublicBooks();
+        }
 
-    sortBooks();
+        //Sort Books
+        sortBooks();
 
-    for(let i=0; i<books.length; i++) {
-        const bookDOM = books[i].generateBookDOM();
+        //Create Book DOM elements
+        for(let i=0; i<books.length; i++) {
+            const bookDOM = books[i].generateBookDOM();
 
-        const rating = Math.round(books[i].rating);
+            const rating = Math.round(books[i].rating);
 
-        if(rating > 0){
-            for(let i=0; i<rating; i++){
+            if(rating > 0){
+                for(let i=0; i<rating; i++){
+                    const star = document.createElement("i");
+                    star.classList.add('fa-solid', 'fa-star');
+                    bookDOM.childNodes[5].appendChild(star);
+                }
+            }
+
+            for(let i=0; i<(5-rating); i++){
                 const star = document.createElement("i");
-                star.classList.add('fa-solid', 'fa-star');
+                star.classList.add('fa-regular', 'fa-star');
                 bookDOM.childNodes[5].appendChild(star);
             }
+
+            article.appendChild(bookDOM);
         }
 
-        for(let i=0; i<(5-rating); i++){
-            const star = document.createElement("i");
-            star.classList.add('fa-regular', 'fa-star');
-            bookDOM.childNodes[5].appendChild(star);
+        //Append Books to Section based on User
+        if(!sessionStorage.getItem("activeUser")){
+            publicSection.appendChild(article);
+        } else {
+            userSection.appendChild(article);
+            loginSection.style.height = 0;
+            loginSection.style.padding = 0;
         }
 
-        article.appendChild(bookDOM);
-    }
-
-    if(!sessionStorage.getItem("activeUser")){
-        publicSection.appendChild(article);
-    } else {
-        userSection.appendChild(article);
-        loginSection.style.height = 0;
-        loginSection.style.padding = 0;
-    }
-
-    if(JSON.parse(sessionStorage.getItem("activeUser")) !== null){
-        userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
-        userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
+        //Update User Data Variables (should proably be moved elsewhere)
+        if(JSON.parse(sessionStorage.getItem("activeUser")) !== null){
+            userKey = JSON.parse(sessionStorage.getItem("activeUser")).jwt;
+            userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
+        }
+    } catch (error) {
+        console.log("Error Generating Books Display DOM", error);
+        throw error;
     }
 }
 
 //Set Theme
 const setTheme = async () =>{
-    const response = await axios.get(`http://localhost:1337/api/themes`);
-    const themes = response.data.data;
-    let activeTheme = null;
+    try{
+        //Fetch Themes from API
+        const response = await axios.get(`http://localhost:1337/api/themes`);
+        const themes = response.data.data;
+        let activeTheme = null;
 
-    for (const theme of themes) {
-        if(theme.attributes.active === true){
-            activeTheme = theme.attributes.css;
-        } else {
-            activeTheme = themes[1].attributes.css;
+        //Search and set Active Theme
+        for (const theme of themes) {
+            if(theme.attributes.active === true){
+                activeTheme = theme.attributes.css;
+            } else {
+                activeTheme = themes[1].attributes.css;
+            }
+            document.querySelector("style").textContent = activeTheme;
         }
-        document.querySelector("style").textContent = activeTheme;
+    } catch (error) {
+        console.log("Error applying color theme", error);
+        throw error;
     }
 }
 
@@ -394,11 +419,11 @@ const generateLoginDOM = () => {
     loginBtn.setAttribute("id", "login_btn");
     loginBtn.textContent = "Log In";
     loginBtn.addEventListener("click", ()=> {
-        console.log("working...");
         login();
     });
     article.appendChild(loginBtn);
 
+    //Register Btn
     const registerBtn = document.createElement("button");
     registerBtn.setAttribute("type", "button");
     registerBtn.setAttribute("id", "register_btn");
@@ -413,27 +438,23 @@ const generateLoginDOM = () => {
     });
     article.appendChild(registerBtn);
 
-    //Append Elements
+    //Append remaining Elements
     loginSection.appendChild(headings);
     loginSection.appendChild(article);
 }
 
-//Login Input Values
-const getLoginInput = () =>{
-    const username = document.getElementById("login_username").value;
-    const password = document.getElementById("login_password").value;
-    return {username, password};
-}
-
 //Login Functionality
 const login = async () => {
+    const username = document.getElementById("login_username").value;
+    const password = document.getElementById("login_password").value;
+
     try {
         //Send login request
         let response = await axios.post(
             "http://localhost:1337/api/auth/local/",
             {
-                identifier: getLoginInput().username,
-                password: getLoginInput().password,
+                identifier: username,
+                password: password,
             }
         );
 
@@ -453,21 +474,23 @@ const login = async () => {
             loginSection.removeChild(loginSection.firstChild);
         }
 
-        //Generate user section
+        //Generate user section DOM
         generateNavDOM();
         generateBookDisplayDOM();
 
-        //Save User Data
+        //Save User Data to Session Storage
         sessionStorage.setItem("activeUser", JSON.stringify(userData));
 
     } catch (error) {
         console.error("Login failed:", error);
+        throw error;
     }
 }
 
 
 //Register DOM
 const generateRegisterDOM = () => {
+    //Scroll Lock Wrapper
     const wrapper = document.createElement("div");
     wrapper.setAttribute("class", "wrapper");
     wrapper.addEventListener("click", ()=>{
@@ -519,30 +542,26 @@ const generateRegisterDOM = () => {
     loginSection.appendChild(wrapper);
 }
 
-//Register Input Values
-const getRegisterInput = () =>{
+//Register Functionality
+const register = async () => {
     const username = document.getElementById("register_username").value;
     const email = document.getElementById("register_email").value;
     const password = document.getElementById("register_password").value;
 
-    return {username, email, password};
-}
-
-//Register Functionality
-const register = async () => {
     try {
         //Send New User Data
         await axios.post(
             "http://localhost:1337/api/auth/local/register",
             {
-                username: getRegisterInput().username,
-                email: getRegisterInput().email,
-                password: getRegisterInput().password
+                username: username,
+                email: email,
+                password: password
             }
         );
 
-        //Remove Register Modal
+        //Remove Register Modal and Scroll Lock
         document.getElementById("loginSection").querySelector(".wrapper").remove();
+        document.body.classList.remove("scrollLock");
 
     } catch (error) {
         console.error("Registration failed:", error);
@@ -554,31 +573,138 @@ const register = async () => {
 
 //Public Books Creation
 const createPublicBooks = async () =>{
-    const responseAPI = await retrieveBooksAPI();
-    const dataAPI = responseAPI.data;
+    try{
+        //Fetch Book API Data
+        const responseAPI = await retrieveBooksAPI();
+        const dataAPI = responseAPI.data;
 
-    books = [];
-    dataAPI.forEach((book)=>{
-        const title = book.attributes.title;
-        const author = book.attributes.author;
-        const pages = book.attributes.pages;
-        const releaseDate = book.attributes.releaseDate;
-        const cover = book.attributes.cover.data.attributes.url;
-        const rating = book.attributes.rating;
-        const id = book.id;
+        //Clear Books Array
+        books = [];
 
-        books.push(new Book(title, author, pages, releaseDate, cover, rating, id));
-    })
+        //Create Books and add to Books
+        dataAPI.forEach((book)=>{
+            const title = book.attributes.title;
+            const author = book.attributes.author;
+            const pages = book.attributes.pages;
+            const releaseDate = book.attributes.releaseDate;
+            const cover = book.attributes.cover.data.attributes.url;
+            const rating = book.attributes.rating;
+            const id = book.id;
 
-    return books;
+            books.push(new Book(title, author, pages, releaseDate, cover, rating, id));
+        })
+
+        return books;
+
+    } catch (error) {
+        console.log("Error Creating Books", error);
+        throw error;
+    }
 }
 
 
 /* User Section */
 
+//Sorting Tools DOM Generations
+const generateSortingDOM = () => {
+    //Sorting Article
+    const article = document.createElement("article");
+    article.id = "sorting";
+
+    //Select Display Type
+    const selectDisplay = document.createElement("select");
+    selectDisplay.name = "";
+    selectDisplay.id = "selectDisplay";
+    selectDisplay.addEventListener("change", ()=>{
+        //Generate Book Display DOM Elements
+        generateBookDisplayDOM();
+
+        //If displaying Users Book List, show option for sorting by User Book Rating
+        if(selectDisplay.value === "user"){
+            optionMyRatings.classList.remove("displayNone");
+
+            //Temporary Bugg Solution - Async Issues
+            retrieveUserAPI().then((user)=>{
+                myBookRatings = user.ratedBooks;
+            });
+
+        } else{
+            optionMyRatings.classList.add("displayNone");
+        }
+    });
+
+    //Public Books Option
+    const optionPublic = document.createElement("option");
+    optionPublic.value = "public";
+    optionPublic.id = "selectDisplay_public";
+    optionPublic.textContent = "All Books";
+
+    //User Books Option
+    const optionUser = document.createElement("option");
+    optionUser.value = "user";
+    optionUser.id = "selectDisplay_user";
+    optionUser.textContent = "My Books";
+
+    //Append remaning Elements
+    selectDisplay.appendChild(optionPublic);
+    selectDisplay.appendChild(optionUser);
+
+    article.appendChild(selectDisplay);
+
+    //Select Sorting
+    const sortBooks = document.createElement("select");
+    sortBooks.name = "";
+    sortBooks.id = "sortBooks";
+    sortBooks.addEventListener("change", ()=>{
+        generateBookDisplayDOM();
+    })
+
+    //Sort Option Title
+    const optionTitle = document.createElement("option");
+    optionTitle.value = "title";
+    optionTitle.id = "sortBooks_title";
+    optionTitle.textContent = "Title";
+
+    //Sort Option Author
+    const optionAuthor = document.createElement("option");
+    optionAuthor.value = "author";
+    optionAuthor.id = "sortBooks_author";
+    optionAuthor.textContent = "Author";
+
+    //Sort Option Rating
+    const optionRating = document.createElement("option");
+    optionRating.value = "rating";
+    optionRating.id = "sortBooks_rating";
+    optionRating.textContent = "Rating";
+
+    //Sort Option Year
+    const optionYear = document.createElement("option");
+    optionYear.value = "year";
+    optionYear.id = "sortBooks_year";
+    optionYear.textContent = "Year";
+
+    //Sort Option User Book Ratings
+    const optionMyRatings = document.createElement("option");
+    optionMyRatings.value = "myRatings";
+    optionMyRatings.id = "sortBooks_myRatings";
+    optionMyRatings.textContent = "My Ratings";
+    optionMyRatings.classList.add("displayNone");
+
+    //Append remaning Elements
+    sortBooks.appendChild(optionTitle);
+    sortBooks.appendChild(optionAuthor);
+    sortBooks.appendChild(optionRating);
+    sortBooks.appendChild(optionYear);
+    sortBooks.appendChild(optionMyRatings);
+
+    article.appendChild(sortBooks);
+
+    document.getElementById("navbar").children[1].appendChild(article); 
+}
+
 //Navbar DOM Generation
 const generateNavDOM = () => {
-    //Article
+    //Navbar Article
     const article = document.createElement("article");
     article.id = "navbar";
 
@@ -597,6 +723,7 @@ const generateNavDOM = () => {
     navbarLogout.type = "button";
     navbarLogout.textContent = "Log Out";
 
+    //Logout when Clicked
     navbarLogout.addEventListener("click", ()=>{
         logout();
     });
@@ -631,6 +758,7 @@ let myBookRatings = null;
 
 //Book Sorting Functionality
 sortBooks = () =>{
+    //Sort by Title as Default
     let sortBy = null;
     if(userKey === null){
         sortBy = "title";
@@ -638,7 +766,8 @@ sortBooks = () =>{
         sortBy = document.getElementById("sortBooks").value;
     }
 
-    //Sorting functions
+    //Sorting Functions
+    //Sort by Author Function
     const sortByTitleAuthor = () =>{
         books.sort((a, b)=>{
             let bookA = a[sortBy].toLowerCase();
@@ -662,6 +791,7 @@ sortBooks = () =>{
         })
     }
 
+    //Sort by Rating Function
     const sortByRating = () =>{
         books.sort((a, b)=>{
             const bookA = a.rating;
@@ -671,6 +801,7 @@ sortBooks = () =>{
         })
     }
 
+    //Sort by Year Function
     const sortByYear = () =>{
         books.sort((a, b)=>{
             const bookA = new Date(a.releaseDate);
@@ -680,6 +811,7 @@ sortBooks = () =>{
         })
     }
 
+    //Sort by MyRating Function - Chat GPT Generated
     const sortByMyRating =  () =>{
         const ratedBooks = myBookRatings;
 
@@ -688,16 +820,16 @@ sortBooks = () =>{
             let ratingB = ratedBooks.find(book => book[0] === b.id);
         
             // Handle cases where ratings are not found (0 rating)
-            if (!ratingA && !ratingB) return 0; // No change in order
-            if (!ratingA) return 1; // Put book a after book b
-            if (!ratingB) return -1; // Put book b after book a
+            if (!ratingA && !ratingB) return 0;
+            if (!ratingA) return 1;
+            if (!ratingB) return -1;
         
             // Sorting based on rating value
             return ratingB[1] - ratingA[1];
         });
-
     }
     
+    //Sorting Conditions
     //Sort by Title or Author
     if(sortBy === "title" || sortBy === "author"){
         sortByTitleAuthor();
@@ -740,139 +872,71 @@ sortBooks = () =>{
     }
 }
 
-//Sorting Tools DOM Generations
-const generateSortingDOM = () => {
-    //Article
-    const article = document.createElement("article");
-    article.id = "sorting";
 
-    //Select Display Type
-    const selectDisplay = document.createElement("select");
-    selectDisplay.name = "";
-    selectDisplay.id = "selectDisplay";
-    selectDisplay.addEventListener("change", ()=>{
-        generateBookDisplayDOM();
-
-        if(selectDisplay.value === "user"){
-            optionMyRatings.classList.remove("displayNone");
-
-            //Temporary Bugg Solution
-            retrieveUserAPI().then((user)=>{
-                myBookRatings = user.ratedBooks;
-            });
-
-        } else{
-            optionMyRatings.classList.add("displayNone");
-        }
-    });
-
-    const optionPublic = document.createElement("option");
-    optionPublic.value = "public";
-    optionPublic.id = "selectDisplay_public";
-    optionPublic.textContent = "All Books";
-
-    const optionUser = document.createElement("option");
-    optionUser.value = "user";
-    optionUser.id = "selectDisplay_user";
-    optionUser.textContent = "My Books";
-
-    selectDisplay.appendChild(optionPublic);
-    selectDisplay.appendChild(optionUser);
-
-    article.appendChild(selectDisplay);
-
-    //Select Sorting
-    const sortBooks = document.createElement("select");
-    sortBooks.name = "";
-    sortBooks.id = "sortBooks";
-    sortBooks.addEventListener("change", ()=>{
-        generateBookDisplayDOM();
-    })
-
-    const optionTitle = document.createElement("option");
-    optionTitle.value = "title";
-    optionTitle.id = "sortBooks_title";
-    optionTitle.textContent = "Title";
-
-    const optionAuthor = document.createElement("option");
-    optionAuthor.value = "author";
-    optionAuthor.id = "sortBooks_author";
-    optionAuthor.textContent = "Author";
-
-    const optionRating = document.createElement("option");
-    optionRating.value = "rating";
-    optionRating.id = "sortBooks_rating";
-    optionRating.textContent = "Rating";
-
-    const optionYear = document.createElement("option");
-    optionYear.value = "year";
-    optionYear.id = "sortBooks_year";
-    optionYear.textContent = "Year";
-
-    const optionMyRatings = document.createElement("option");
-    optionMyRatings.value = "myRatings";
-    optionMyRatings.id = "sortBooks_myRatings";
-    optionMyRatings.textContent = "My Ratings";
-    optionMyRatings.classList.add("displayNone");
-
-    sortBooks.appendChild(optionTitle);
-    sortBooks.appendChild(optionAuthor);
-    sortBooks.appendChild(optionRating);
-    sortBooks.appendChild(optionYear);
-    sortBooks.appendChild(optionMyRatings);
-
-    article.appendChild(sortBooks);
-
-    document.getElementById("navbar").children[1].appendChild(article); 
-}
 
 //API Call User
 const retrieveUserAPI = async () =>{
-    const userID = JSON.parse(sessionStorage.getItem("activeUser")).id;
     try{
         const response = await axios.get(`http://localhost:1337/api/users/${userID}?populate=deep,3`);
         return response.data;
     } catch (error) {
         console.error("Error retrieving API information");
+        throw error;
     }
 }
 
 //API Call User Ratings
 const retrieveUserRatings = async () =>{
-    const user = await retrieveUserAPI();
-    const ratedBooks = user.ratedBooks;
-
-    return ratedBooks;
+    try{
+        const user = await retrieveUserAPI();
+        const ratedBooks = user.ratedBooks;
+    
+        return ratedBooks;
+    } catch (error){
+        console.log("Error retrieving user API Rated Books");
+        throw error;
+    }
 }
 
 //User Books Creation
 const createUserBooks = async () => {
-    const responseAPI = await retrieveUserAPI();
-    const booksData = responseAPI.books;
+    try{
+        //Retrive API Book Data
+        const responseAPI = await retrieveUserAPI();
+        const booksData = responseAPI.books;
+    
+        //Clear old Books
+        books = [];
 
-    books = [];
-    booksData.forEach((book)=>{
-        const title = book.title;
-        const author = book.author;
-        const pages = book.pages;
-        const releaseDate = book.releaseDate;
-        const cover = book.cover.url;
-        const rating = book.rating;
-        const id = book.id;
+        //Create Books
+        booksData.forEach((book)=>{
+            const title = book.title;
+            const author = book.author;
+            const pages = book.pages;
+            const releaseDate = book.releaseDate;
+            const cover = book.cover.url;
+            const rating = book.rating;
+            const id = book.id;
+    
+            books.push(new Book(title, author, pages, releaseDate, cover, rating, id));
+        })
 
-        books.push(new Book(title, author, pages, releaseDate, cover, rating, id));
-    })
-    return books;
+        return books;
+    } catch (error) {
+        console.log("Error Creating Users Books");
+        throw error;
+    }
 }
 
 //Logout Functionality
 const logout = () =>{
+    //Clear Session Storage and refresh Browser
     sessionStorage.clear();
     location.reload();
 }
 
 
-/* Run on Refresh */
+/* Run on refresh */
 
 //Check if there is an active user or not, then run appropriate DOM creations
 if(sessionStorage.getItem("activeUser")) {
